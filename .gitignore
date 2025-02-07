@@ -1,5 +1,5 @@
 #Other 
-.vs
+.vs/
 
 
 
@@ -176,3 +176,4 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+/.vs

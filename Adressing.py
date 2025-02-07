@@ -1,12 +1,17 @@
+from root import Root
+
+
 class Address:
 
-    def __init__(self,line1,line2,desc = "",name = None,signatory = None):
+    def __init__(self,person,line1,line2,desc = "",name = None,signature = None):
+        self.person = person
+
         self.code = None
         self.line1 = line1
         self.line2 = line2
         self.desc = desc
         self.__name = name
-        self.__signatory = signatory
+        self.__signature = signature
 
     def get_name(self):
         if self.__name == None:
@@ -14,46 +19,40 @@ class Address:
         return self.__name
 
     def get_sign(self):
-        if self.__signatory == None:
+        if self.__signature == None:
             return "INS. "+self.get_name()
         else:
-            return self.__signatory
+            return self.__signature
+
+    def set_sign(self,signature):
+        self.__signature = signature
 
 
-class Address_book:
+class Address_book(Root):
 
-    def __init__(self,display,date):
+    def __init__(self,display,you):
         self.display = display
-        self.date = date
+        self.the_date = self.data.the_date
+        self.you = you
         self.__addresses = dict()
 
         self.__code = 1
 
-    def open_book(self):
-        top_bar = self.display.text_box(0,3,5,115,bottom = "_")
-        top_bar.print([0,1,2],"Address Book"+" "*80+"-- {0:%d} {0:%b}. {0:%Y}".format(self.date),
-                "-"*110,
-                "No   | "+"Name" + " "*17+"| Description")#1,"No   |"+" "*9+"Name" + " "*9+"|"+ " "*35+"Description"
+    def get_Addresses(self):
+        return self.__addresses.copy()
 
-        body = self.display.text_box(3,24,5,115,bottom = "_")
+    def open_book(self,
+                  type_date = False,
+                  accept_codes = True,
+                  other_accepted_inputs = [],
+                  prompt = "<Enter a code to Write Letter>              <Enter 'open' to read next letter in inbox> \n<Enter 'day' to finsh the day>"):
 
-        texts = ["     |"+" "*22+"|" for x in range(21)]
-
-        addresses = list(self.__addresses.values())
-        for line in range(len(addresses)):
-            code = addresses[line].code
-            name = addresses[line].get_name()
-            desc = addresses[line].desc
-            texts[line] = f"{code} | {name}"+" "*(21-len(name))+f"| {desc}"
-
-        body.print([x for x in range(1,21)],*texts)
-
-        code_entered = self.display.get_input("<Enter Code to Write Letter>").replace("0","")
-        while not code_entered in self.__addresses.keys():
-            code_entered = self.display.get_input("<INVALID INPUT> <Enter Code to Write Letter>").replace("0","")
+        entered = self.display(self,prompt,type = type_date).replace("0","").lower()
+        while not (((entered in self.__addresses.keys()) and accept_codes) or (entered in other_accepted_inputs)):
+            entered = self.display(self,prompt+"         <INVALID INPUT>").replace("0","").lower()
 
         self.display.clear()
-        return self.__addresses[code_entered]
+        return entered
 
     def add(self,address):
         address.code = str(self.__code).rjust(4,"0")

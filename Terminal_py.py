@@ -19,7 +19,9 @@ class Terminal():
         self.calling = None
         self.__dependencies = []
         self.__changes_made = False
+
         self.debug = False
+        self.typing = True
 
         t = Thread(target=self.__Keeper)
         t.start()
@@ -99,15 +101,18 @@ class Text_box:
             self.terminal.change_made()
 
     def type(self,line,text,speed = 0.12):
-        self.text[line] = ""
+        if self.terminal.typing:
+            self.text[line] = ""
 
-        self.__text = text
-        self.__line = line
-        self.__speed = speed
+            self.__text = text
+            self.__line = line
+            self.__speed = speed
 
-        t = Thread(target=self.__typer)
-        t.start()
-        t.join()
+            t = Thread(target=self.__typer)
+            t.start()
+            t.join()
+        else:
+            self(line,text)
 
     def clear(self):
         self.text = ["" for x in range(self.line_end - self.line_start)]
