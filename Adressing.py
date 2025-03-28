@@ -41,6 +41,9 @@ class Address_book(Root):
     def get_Addresses(self):
         return self.__addresses.copy()
 
+    def get_Address(self,No):
+        return self.__addresses[No]
+
     def open_book(self,
                   type_date = False,
                   accept_codes = True,

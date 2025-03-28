@@ -4,8 +4,10 @@ from Display import Display
 from Date import Date
 from Adressing import Address,Address_book
 from Letter import Letter
-from Personage import Personage
 from root import Root
+from People import General_secretariat,You
+
+
 
 class Sequences:
 
@@ -58,43 +60,35 @@ class Sequences:
         self.display(received_letter,"<Press Enter to Confirm Read>")
         return district_name
 
-class General_secretariat(Personage):
+class Game(Root):
+
+    year = 1924
+    month = 1
+    day = 1
+    size = 10
 
     def __init__(self):
-        Personage.__init__(self)
-        self.create_address("General Secretariat",
-                            "Old Street Buildings A.N.1",
-                            "The Executive Branch of the territorial civil service")
 
-    def reply(self):
-        pass
+        self.data.the_date = Date(self.year, self.month, self.day)
+        self.data.district = District(self.size)
+        self.general_secretariat = General_secretariat()
+        self.you = You()
 
-class You(Personage):
+    def next_day(self):
+            self.data.the_date.next_day()
+            self.distict.next_day()
+            self.data.people.read_and_reply()
 
-    def __init__(self):
-        Personage.__init__(self)
-
-    def create_address(self,district_name):
-        return Personage.create_address(self,
-                                        district_name+" District Administration",
-                                        "New Street Buildings Q.K.8",
-                                        "You.")
-
-    def proccess_inbox(self):
-        pass
 
 class Main(Sequences,Root):
 
     def __init__(self):
 
-        self.data.the_date = Date(1924, 1, 1)
-        self.data.district = District(size = 10)
-
+        self.game = Game()
         self.display = Display()
-        self.general_secretariat = General_secretariat()
-        self.you = You()
-        self.address_book = Address_book(self.display,self.you)
-        self.address_book.add(self.general_secretariat.get_address())
+        
+        self.address_book = Address_book(self.display,self.game.you)
+        self.address_book.add(self.game.general_secretariat.get_address())
 
     def start(self):
         start_key = self.start_up()
@@ -107,19 +101,19 @@ class Main(Sequences,Root):
 
         if "o" in start_key:
 
-            self.you.create_address("test_district")
-            users_first_letter = Letter(self.you.get_address(),self.display,self.general_secretariat.get_address())
+            self.game.you.create_address("test_district")
+            users_first_letter = Letter(self.game.you.get_address(),self.display,self.game.general_secretariat.get_address())
             users_first_letter.set_contents("Hi, can i have more details on my assignment.")
             users_first_letter.send(days_till_delivery=1)
 
         else:
         
             self.data.district.name = self.intro()
-            self.you.create_address(self.data.district.name)
+            self.game.you.create_address(self.data.district.name)
 
             self.address_book.open_book(prompt="<Enter No. to Write Letter (i.e 78 or 0078)>")
 
-            users_first_letter = Letter(self.you.get_address(),self.display,self.general_secretariat.get_address())
+            users_first_letter = Letter(self.game.you.get_address(),self.display,self.game.general_secretariat.get_address())
             users_first_letter.write(make_signature=True)
             users_first_letter.send(days_till_delivery=1)
 
@@ -130,9 +124,19 @@ class Main(Sequences,Root):
 
     def main_loop(self):
         while True:
-            self.data.the_date.next_day()
-            self.data.people.read_and_reply()
-            self.address_book.open_book(type_date=True)
+            self.game.next_day()
+            while True:
+                user_inut = self.address_book.open_book(type_date=True,other_accepted_inputs = ["day","open"])
+                match user_inut:
+                    case "day":
+                        break
+                    case "open":
+                        pass
+                    case _:
+                        writing_to = self.address_book.get_Addresses()[user_inut]
+                        letter = Letter(self.game.you.get_address(),self.display,self.game.general_secretariat.get_address())
+                        letter.write()
+                        letter.send(days_till_delivery=1)
             
         
 if __name__ == "__main__":

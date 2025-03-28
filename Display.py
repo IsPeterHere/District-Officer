@@ -60,10 +60,11 @@ class Display(Terminal,DisplayObjects):
         self.input_prompt_box = None
         
     def input_prompt(self,prompt):
+        prompt = "\033[38;5;243m"+prompt+"\033[0m"
         self.input_prompt_box = self.text_box(26,28,10,120)
         prompt = prompt.split("\n")+[" "]
         self.input_prompt_box.print([0,1],*prompt)
-
+        
     def remove_input_prompt(self):
         if self.input_prompt_box != None:
             self.remove_text_box(self.input_prompt_box)

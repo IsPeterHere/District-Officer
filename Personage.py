@@ -1,7 +1,8 @@
 from Adressing import Address
 from root import Root
+from Reasoning import Reasoning
 
-class Personage(Root):
+class Personage(Root,Reasoning):
 
     def __init__(self):
         self.__address = None
@@ -17,6 +18,7 @@ class Personage(Root):
         return self.__address
 
     def add_to_inbox(self,delivery_date,letter):
+        assert delivery_date > self.data.the_date(), "A letter must be added to a future inbox"
         self.__inbox.get(delivery_date,list()).append(letter)
 
     def get_todays_inbox(self):
