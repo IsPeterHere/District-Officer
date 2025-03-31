@@ -1,17 +1,17 @@
 
 from datetime import timedelta
-from root import Root
 
-class Letter(Root):
+class Letter:
 
     number_of_lines = 10
 
-    def __init__(self,address,display, delivery_address = None, signoff = "Yours sincerely"):
-        self.display = display
+    def __init__(self,instance,address,delivery_address = None, signoff = "Yours sincerely"):
+        self.instance = instance
         self.delivery_address = delivery_address
 
+        self.display = self.instance.display
         self.sender_address = address
-        self.date = self.data.the_date()
+        self.date = self.instance.data.the_date()
         self.signoff = signoff
 
         self.contents = []
@@ -39,7 +39,7 @@ class Letter(Root):
             self.sender_address.set_sign("_______________")
             signature = self.display(self,"<Enter Signature (PERMANENT)>")
             self.sender_address.set_sign(signature)
-            self.data.player_signature = signature
+            self.instance.data.player_signature = signature
 
         self.display(self)
 

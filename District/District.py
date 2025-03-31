@@ -36,40 +36,11 @@ class Tile:
         self.__owner = None
         self.__map.release_tile(self)
 
-
-class Local_Employment:
-
-    def __init__(self,local_Economy,local_population):
-        self.economy = local_Economy
-        self.population = local_population
-
-
-    
-class Local_Construction:
-
-    def __init__(self,local_Economy,local_Employment):
-        pass
-
-class Local_Industry_Supply:
-
-    def __init__(self,local_Economy,local_Employment):
-        pass
-
-class Local_Industry_Production:
-
-    def __init__(self,local_Economy,local_Employment):
-        pass
-
-class Local_Industry_Sale_and_Export:
-
-    def __init__(self,local_Economy,local_Employment):
-        pass
-
 class Place:
 
     names = []
-    with open("GermanTownNames.txt") as f:
-        for line in f.readlines:
+    with open("Resources/GermanTownNames.txt") as f:
+        for line in f.readlines():
             names.append(line)
 
     def __init__(self,tile,name = None):
@@ -132,3 +103,5 @@ class District:
         for _ in range(rural_areas):
             self.rural_areas.append(Village(self.map.get_free_tile(),"Rural Village"))
 
+    def next_day(self):
+        pass

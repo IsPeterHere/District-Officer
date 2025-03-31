@@ -1,5 +1,3 @@
-from root import Root
-
 
 class Address:
 
@@ -28,12 +26,13 @@ class Address:
         self.__signature = signature
 
 
-class Address_book(Root):
+class Address_book:
 
-    def __init__(self,display,you):
-        self.display = display
-        self.the_date = self.data.the_date
-        self.you = you
+    def __init__(self,instance):
+        self.instance = instance
+        self.display = self.instance.display
+        self.the_date = self.instance.data.the_date
+        self.you = self.instance.you
         self.__addresses = dict()
 
         self.__code = 1

@@ -1,9 +1,9 @@
-from Personage import Personage
+from People.Personage import Personage
 
 class General_secretariat(Personage):
 
-    def __init__(self):
-        Personage.__init__(self)
+    def __init__(self,instance):
+        Personage.__init__(self,instance)
         self.create_address("General Secretariat",
                             "Old Street Buildings A.N.1",
                             "The Executive Branch of the territorial civil service")
@@ -24,8 +24,8 @@ class General_secretariat(Personage):
 
 class You(Personage):
 
-    def __init__(self):
-        Personage.__init__(self)
+    def __init__(self,instance):
+        Personage.__init__(self,instance)
 
     def create_address(self,district_name):
         return Personage.create_address(self,
