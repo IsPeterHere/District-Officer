@@ -1,8 +1,7 @@
-import dis
-from Terminal_py import Terminal
+from InOut.Terminal_py import Terminal
 from time import sleep
-from Adressing import Address_book
-from Letter import Letter
+from Post.Adressing import Address_book
+from Post.Letter import Letter
 
 class DisplayObjects:
 

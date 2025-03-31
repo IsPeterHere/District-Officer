@@ -1,14 +1,13 @@
-from Adressing import Address
-from root import Root
-from Reasoning import Reasoning
+from Post.Adressing import Address
 
-class Personage(Root,Reasoning):
+class Personage():
 
-    def __init__(self):
+    def __init__(self,instance):
+        self.instance = instance
         self.__address = None
         self.__inbox = dict()
 
-        self.data.people.add(self)
+        self.instance.data.people.add(self)
 
     def get_address(self):
         return self.__address
@@ -18,14 +17,14 @@ class Personage(Root,Reasoning):
         return self.__address
 
     def add_to_inbox(self,delivery_date,letter):
-        assert delivery_date > self.data.the_date(), "A letter must be added to a future inbox"
+        assert delivery_date > self.instance.data.the_date(), "A letter must be added to a future inbox"
         self.__inbox.get(delivery_date,list()).append(letter)
 
     def get_todays_inbox(self):
-        return self.__inbox.get(self.data.the_date(),list())
+        return self.__inbox.get(self.instance.data.the_date(),list())
 
     def clear_todays_inbox(self):
-        self.__inbox[self.data.the_date()] = list()
+        self.__inbox[self.instance.data.the_date()] = list()
 
     def proccess_inbox(self):
         inbox = self.get_todays_inbox()
