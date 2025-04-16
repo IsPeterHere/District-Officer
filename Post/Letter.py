@@ -1,4 +1,3 @@
-
 from datetime import timedelta
 
 class Letter:
@@ -26,14 +25,27 @@ class Letter:
     def write(self, type_line1 = False,make_signature = False):
         self.display(self,input = False,type = True,signature = False)
 
-        self.contents = ["->"]+["."]*(Letter.number_of_lines-1)+[""]
-        line = 0
-        while line < Letter.number_of_lines and (user_input := self.display(self,"<Enter 'Done' to finish writing>",signature = False)).lower() != "done":
-            self.contents[line] = user_input
-            line += 1
-            self.contents[line] = "->"
+        template_reader = self.delivery_address.person.get_template().make_reader()
+        self.contents = [""]
+
+        def display():
+            _next = template_reader["read"]()
+            self.contents[-1] = "\033[38;5;243m"+_next+"\033[0m" 
+            return self.display(self,prompt = "<Enter 'x' To Exit> <Enter 'n' / 'm' To Scroll Choices>")
+            
+        while (_input :=  display())!= "x":
+            if _input == "m":
+                template_reader["right"]()
+            elif _input == "n":
+                template_reader["left"]()
+            else:
+                chosen = template_reader["read"]()
+                self.contents[-1] = chosen
+                template_reader["choose"]()
+                self.contents.append("")
         
-        self.contents = [line if line != "." and line != "->" else "" for line in self.contents]
+            if template_reader["end"]():
+                break
 
         if make_signature:
             self.sender_address.set_sign("_______________")

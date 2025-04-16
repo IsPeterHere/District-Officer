@@ -107,7 +107,7 @@ class Main(Sequences):
                         pass
                     case _:
                         writing_to = self.address_book.get_Addresses()[user_inut]
-                        letter = Letter(self.instance, self.instance.you.get_address(),self.instance.general_secretariat.get_address())
+                        letter = Letter(self.instance, self.instance.you.get_address(),writing_to)
                         letter.write()
                         letter.send(days_till_delivery=1)
             

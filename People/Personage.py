@@ -32,3 +32,9 @@ class Personage():
 
         for letter in inbox:
             self.reply(letter)
+
+    def reply(self):
+        raise RuntimeError(f"No reply function defined for {self.__address.get_name()}")
+
+    def get_template(self):
+        raise RuntimeError(f"No template defined for {self.__address.get_name()}")
