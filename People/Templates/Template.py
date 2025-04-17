@@ -1,3 +1,5 @@
+from typing import DefaultDict
+
 
 class Template:
 
@@ -6,28 +8,35 @@ class Template:
 
     def make_reader(self):
 
-        at = self.base["root"]
+        at = self.base
         index = 0
+        contents = DefaultDict(list)
+
+        def choices():
+            return list(at.keys())
 
         def read():
-            choices = list(at.keys())
-            return choices[index]
+            return choices()[index]
         
         def left():
             nonlocal index
             index -= 1
             if index < 0:
-                index = len(list(at.keys()))-1
+                index = len(choices())-1
 
         def right():
             nonlocal index
             index += 1
-            if index >= len(list(at.keys())):
+            if index >= len(choices()):
                 index = 0
 
         def choose():
-            nonlocal at,index 
-            at = at[list(at.keys())[index]]
+            nonlocal at,index,contents
+            info = at[choices()[index]]["info"]
+            for key in list(info.keys()):
+                contents[key].append(info[key])
+
+            at = at[choices()[index]]["branch"]
             index = 0
 
         def end():
@@ -35,42 +44,65 @@ class Template:
                 return True
             return False
 
-        return {"read":read,"left":left,"right":right,"choose":choose,"end":end}
+        def get_contents():
+            return contents
+
+        return {"choices":choices,"read":read,"left":left,"right":right,"choose":choose,"end":end,"contents":get_contents}
 
     def make_base(self):
-        self.base["root"] = {}
-        return self.node(self.base["root"])
+        self.base = {}
+        return self.node(self.base)
+
+    def make_option_creator(self):
+        def option(text, **kwargs):
+            return kwargs | {"text":text} 
+        return option
+
 
     def node(self,position):
-        called = False
+        split = False
+        pos = position
 
         def caller(*lists_of_options):
-            nonlocal called
+            nonlocal split,pos
 
-            if called:
-                raise RuntimeError("Node already setup")
+            if split:
+                raise RuntimeError("Node already split")
 
             if len(lists_of_options) == 0:
-                lists_of_options = [["\n"]]
+                lists_of_options = [[{"text":"\n"}]]
 
-            branches = [{} for _ in range(len(lists_of_options))]
-            for branch_index in range(len(branches)):
-                for option in  lists_of_options[branch_index]:
-                    position[option] = branches[branch_index]
+            if len(lists_of_options) == 1 and len(lists_of_options[0]) == 1 :
+                branch = {}
+                option = lists_of_options[0][0]
+                pos[option["text"]] = {"branch":branch, "info":option}
+                pos = branch
+            else:
+                branches = [{} for _ in range(len(lists_of_options))]
+                for branch_index in range(len(branches)):
+                    for option in  lists_of_options[branch_index]:
+                        pos[option["text"]] = {"branch":branches[branch_index], "info":option}
 
-            new_nodes = [self.node(branches[branch_index]) for branch_index in range(len(branches))]
+                new_nodes = [self.node(branches[branch_index]) for branch_index in range(len(branches))]
 
-            called = True
-            return tuple(new_nodes)
+                split = True
+                return tuple(new_nodes)
 
         return caller
 
-
-"""initial_communication = Template()
+"""
+initial_communication = Template()
 base = initial_communication.make_base()
-        
-main_root, something_else  = base(["Hi Sir", "Greetings,"], ["Honey,"])
-main_root(["I request more information on my assignment"])
-something_else(["Theres a bee in the kitchen... OwO."])
+option = initial_communication.make_option_creator()
+
+main_root, something_else  = base([option("Hi Sir", formal = 1), 
+                                   option("Greetings,")], 
+                                  [option("Honey,")])
+
+main_root()
+something_else()
+
+main_root([option("I request more information on my assignment")])
+something_else([option("Theres a bee in the kitchen... OwO.")])
 
 print(initial_communication.base)"""

@@ -14,6 +14,7 @@ class Letter:
         self.signoff = signoff
 
         self.contents = []
+        self.template_info_contents = []
 
         self.sent = False
     
@@ -31,7 +32,9 @@ class Letter:
         def display():
             _next = template_reader["read"]()
             self.contents[-1] = "\033[38;5;243m"+_next+"\033[0m" 
-            return self.display(self,prompt = "<Enter 'x' To Exit> <Enter 'n' / 'm' To Scroll Choices>")
+            if len(template_reader["choices"]()) > 1:
+                return self.display(self,prompt = "<Enter 'x' To Exit> <Enter 'n' / 'm' To Scroll Choices>")
+            return self.display(self,prompt = "<Enter 'x' To Exit> <Press Enter To Select>")
             
         while (_input :=  display())!= "x":
             if _input == "m":
@@ -43,9 +46,16 @@ class Letter:
                 self.contents[-1] = chosen
                 template_reader["choose"]()
                 self.contents.append("")
+
+                while not template_reader["end"]() and (chosen := template_reader["read"]()) == "\n":
+                    self.contents[-1] = ""
+                    template_reader["choose"]()
+                    self.contents.append("")
         
             if template_reader["end"]():
                 break
+
+        self.template_info_contents = template_reader["contents"]()
 
         if make_signature:
             self.sender_address.set_sign("_______________")

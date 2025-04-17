@@ -16,10 +16,17 @@ class General_secretariat(Personage):
     def create_templates(self):
         self.initial_communication = Template()
         base = self.initial_communication.make_base()
-        
-        main_root, something_else  = base(["Hi Sir", "Greetings,"], ["Honey,"])
-        main_root(["I request more information in my assignment"])
-        something_else(["Theres a bee in the kitchen... OwO."])
+        option = self.initial_communication.make_option_creator()
+
+        main_root, something_else  = base([option("Hi Sir", formal = 1), 
+                                           option("Greetings,")], 
+                                          [option("Honey,")])
+
+        main_root()
+        something_else()
+
+        main_root([option("I request more information on my assignment")])
+        something_else([option("Theres a bee in the kitchen... OwO.")])
 
     def reply(self):
         pass 
