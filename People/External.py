@@ -18,15 +18,17 @@ class General_secretariat(Personage):
         base = self.initial_communication.make_base()
         option = self.initial_communication.make_option_creator()
 
-        main_root, something_else  = base([option("Hi Sir", formal = 1), 
+        main_root, something_else  = base([option("Hi Sir"), 
                                            option("Greetings,")], 
-                                          [option("Honey,")])
+                                          [option("Hi,")])
 
+        main_root()
+        something_else()
         main_root()
         something_else()
 
         main_root([option("I request more information on my assignment")])
-        something_else([option("Theres a bee in the kitchen... OwO.")])
+        something_else([option("Tell me more.")])
 
     def reply(self):
         pass 

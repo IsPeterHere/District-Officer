@@ -51,7 +51,7 @@ class Address_book:
 
         entered = self.display(self,prompt,type = type_date).replace("0","").lower()
         while not (((entered in self.__addresses.keys()) and accept_codes) or (entered in other_accepted_inputs)):
-            entered = self.display(self,prompt+"         <INVALID INPUT>").replace("0","").lower()
+            entered = self.display(self,prompt+"              <INVALID INPUT>").replace("0","").lower()
 
         self.display.clear()
         return entered

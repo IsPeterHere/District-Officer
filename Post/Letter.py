@@ -3,6 +3,7 @@ from datetime import timedelta
 class Letter:
 
     number_of_lines = 10
+    non_selected_colour = ["\033[38;5;243m","\033[0m"]
 
     def __init__(self,instance,address,delivery_address = None, signoff = "Yours sincerely"):
         self.instance = instance
@@ -31,7 +32,7 @@ class Letter:
 
         def display():
             _next = template_reader["read"]()
-            self.contents[-1] = "\033[38;5;243m"+_next+"\033[0m" 
+            self.contents[-1] = self.non_selected_colour[0]+_next+self.non_selected_colour[1]
             if len(template_reader["choices"]()) > 1:
                 return self.display(self,prompt = "<Enter 'x' To Exit> <Enter 'n' / 'm' To Scroll Choices>")
             return self.display(self,prompt = "<Enter 'x' To Exit> <Press Enter To Select>")
@@ -41,14 +42,11 @@ class Letter:
                 template_reader["right"]()
             elif _input == "n":
                 template_reader["left"]()
-            else:
-                chosen = template_reader["read"]()
-                self.contents[-1] = chosen
+            elif _input == "":
+                self.contents[-1] = self.contents[-1].replace(self.non_selected_colour[0], '').replace(self.non_selected_colour[1], '')
                 template_reader["choose"]()
-                self.contents.append("")
 
                 while not template_reader["end"]() and (chosen := template_reader["read"]()) == "\n":
-                    self.contents[-1] = ""
                     template_reader["choose"]()
                     self.contents.append("")
         
@@ -59,7 +57,8 @@ class Letter:
 
         if make_signature:
             self.sender_address.set_sign("_______________")
-            signature = self.display(self,"<Enter Signature (PERMANENT)>")
+            while (signature := self.display(self,"<Enter Signature (PERMANENT)>")) =="":
+                   pass
             self.sender_address.set_sign(signature)
             self.instance.data.player_signature = signature
 

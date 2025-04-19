@@ -39,7 +39,8 @@ class Sequences:
                    "The Advisory Political Committee has assigned you and a small selection of staff to",
                    "administer the largely rural district of ________")
 
-        district_name =  self.instance.display(received_letter,"<Enter District Name>",type = True)
+        while (district_name :=  self.instance.display(received_letter,"<Enter District Name>",type = True)) == "":
+            pass
 
         received_letter.set_contents(
                    "Good Sir. ","","",
@@ -90,7 +91,7 @@ class Main(Sequences):
             users_first_letter.write(make_signature=True)
             users_first_letter.send(days_till_delivery=1)
 
-            self.address_book.open_book(accept_codes=False,other_accepted_inputs = ["day"],prompt="<It may take a day or more for a reply to arrive>   <Enter 'day' to finsh the day>")
+            self.address_book.open_book(accept_codes=False,other_accepted_inputs = ["day"],prompt="<It May Take a Day or More For a Reply to Arrive In Your Inbox>   <Enter 'day' to Finsh The Day> \n")
 
         self.main_loop()
 
