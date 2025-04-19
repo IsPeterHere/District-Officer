@@ -1,9 +1,9 @@
-
 from datetime import timedelta
 
 class Letter:
 
     number_of_lines = 10
+    non_selected_colour = ["\033[38;5;243m","\033[0m"]
 
     def __init__(self,instance,address,delivery_address = None, signoff = "Yours sincerely"):
         self.instance = instance
@@ -15,6 +15,7 @@ class Letter:
         self.signoff = signoff
 
         self.contents = []
+        self.template_info_contents = []
 
         self.sent = False
     
@@ -26,18 +27,38 @@ class Letter:
     def write(self, type_line1 = False,make_signature = False):
         self.display(self,input = False,type = True,signature = False)
 
-        self.contents = ["->"]+["."]*(Letter.number_of_lines-1)+[""]
-        line = 0
-        while line < Letter.number_of_lines and (user_input := self.display(self,"<Enter 'Done' to finish writing>",signature = False)).lower() != "done":
-            self.contents[line] = user_input
-            line += 1
-            self.contents[line] = "->"
+        template_reader = self.delivery_address.person.get_template().make_reader()
+        self.contents = [""]
+
+        def display():
+            _next = template_reader["read"]()
+            self.contents[-1] = self.non_selected_colour[0]+_next+self.non_selected_colour[1]
+            if len(template_reader["choices"]()) > 1:
+                return self.display(self,prompt = "<Enter 'x' To Exit> <Enter 'n' / 'm' To Scroll Choices>")
+            return self.display(self,prompt = "<Enter 'x' To Exit> <Press Enter To Select>")
+            
+        while (_input :=  display())!= "x":
+            if _input == "m":
+                template_reader["right"]()
+            elif _input == "n":
+                template_reader["left"]()
+            elif _input == "":
+                self.contents[-1] = self.contents[-1].replace(self.non_selected_colour[0], '').replace(self.non_selected_colour[1], '')
+                template_reader["choose"]()
+
+                while not template_reader["end"]() and (chosen := template_reader["read"]()) == "\n":
+                    template_reader["choose"]()
+                    self.contents.append("")
         
-        self.contents = [line if line != "." and line != "->" else "" for line in self.contents]
+            if template_reader["end"]():
+                break
+
+        self.template_info_contents = template_reader["contents"]()
 
         if make_signature:
             self.sender_address.set_sign("_______________")
-            signature = self.display(self,"<Enter Signature (PERMANENT)>")
+            while (signature := self.display(self,"<Enter Signature (PERMANENT)>")) =="":
+                   pass
             self.sender_address.set_sign(signature)
             self.instance.data.player_signature = signature
 

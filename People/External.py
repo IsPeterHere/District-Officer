@@ -1,3 +1,4 @@
+from People.Templates.Template import Template 
 from People.Personage import Personage
 
 class General_secretariat(Personage):
@@ -8,19 +9,32 @@ class General_secretariat(Personage):
                             "Old Street Buildings A.N.1",
                             "The Executive Branch of the territorial civil service")
 
-        self.initial_communication = False
+
+
+        self.create_templates()
+
+    def create_templates(self):
+        self.initial_communication = Template()
+        base = self.initial_communication.make_base()
+        option = self.initial_communication.make_option_creator()
+
+        main_root, something_else  = base([option("Hi Sir"), 
+                                           option("Greetings,")], 
+                                          [option("Hi,")])
+
+        main_root()
+        something_else()
+        main_root()
+        something_else()
+
+        main_root([option("I request more information on my assignment")])
+        something_else([option("Tell me more.")])
 
     def reply(self):
-        if self.initial_communication:
-            pass
+        pass 
 
-        else:
-            success = self.reply_initial_communication()
-            if success:
-                self.initial_communication = True
-
-    def reply_initial_communication(self):
-        pass
+    def get_template(self):
+        return self.initial_communication
 
 class You(Personage):
 
@@ -34,7 +48,8 @@ class You(Personage):
                                         "You.")
 
     def proccess_inbox(self):
-        pass
+        #This is Overriding to disable inherited method.
+        pass 
 
     def add_to_inbox(self,delivery_date,letter):
         self.__inbox.get(delivery_date,list()).append(letter)

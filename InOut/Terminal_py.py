@@ -87,7 +87,7 @@ class Text_box:
         self.top = top
         self.bottom = bottom
 
-        self.text = ["" for x in range(self.line_end - self.line_start)]
+        self.text = ["" for _ in range(self.line_end - self.line_start)]
 
 
     def __call__(self,line,text):
