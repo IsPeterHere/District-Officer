@@ -14,7 +14,7 @@ class General_secretariat(Personage):
         self.create_templates()
 
     def create_templates(self):
-        self.initial_communication = Template()
+        self.initial_communication = Template("write")
         base = self.initial_communication.make_base()
         option = self.initial_communication.make_option_creator()
 

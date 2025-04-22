@@ -3,7 +3,17 @@ from typing import DefaultDict
 
 class Template:
 
-    def __init__(self):
+    max_width = 109
+
+    def __init__(self,type):
+        match(type):
+            case "respond":
+                self.type = type
+            case "write":
+                self.type = type
+            case _:
+                raise RuntimeError("Template must have valid type")
+
         self.base = {}
 
     def make_reader(self):
@@ -12,12 +22,16 @@ class Template:
         index = 0
         contents = DefaultDict(list)
 
+        def response_function(letter_contents):
+            nonlocal index
+            index = at["response_func"](letter_contents)
+
         def choices():
-            return list(at.keys())
+            return list(at["options"].keys())
 
         def read():
             return choices()[index]
-        
+
         def left():
             nonlocal index
             index -= 1
@@ -32,36 +46,75 @@ class Template:
 
         def choose():
             nonlocal at,index,contents
-            info = at[choices()[index]]["info"]
+            info = at["options"][choices()[index]]["info"]
             for key in list(info.keys()):
                 contents[key].append(info[key])
 
-            at = at[choices()[index]]["branch"]
+            at = at["options"][choices()[index]]["branch"]
             index = 0
 
         def end():
-            if at == {}:
+            if at["options"] == {}:
                 return True
             return False
 
         def get_contents():
             return contents
 
-        return {"choices":choices,"read":read,"left":left,"right":right,"choose":choose,"end":end,"contents":get_contents}
+        return {"choices":choices,"read":read,"left":left,"right":right,"choose":choose,"end":end,"contents":get_contents,"response_function":response_function}
+
+    def make_response(self,received_letter_contents):
+        if self.type != "respond":
+            raise RuntimeError("template cant respond as it is not of a response type")
+
+        contents = [""]
+
+        reader = self.make_reader()
+        while not reader["end"]():
+            if len(reader["choices"]()) == 1:
+                chosen = reader["read"]()
+                reader["choose"]()
+            else:
+                reader["response_function"](received_letter_contents)
+                chosen = reader["read"]()
+                reader["choose"]()
+
+            if chosen == "":
+                contents.append("")
+            else:
+                contents[-1] += chosen 
+
+        return contents
+
+
 
     def make_base(self):
-        self.base = {}
+        self.base = {"options":{},"response_func":None}
         return self.node(self.base)
 
     def make_option_creator(self):
         def option(text, **kwargs):
-            return kwargs | {"text":text} 
+            return kwargs | {"__text":text} 
         return option
 
 
     def node(self,position):
         split = False
         pos = position
+
+        def response_func_setter(new_nodes):
+            def response_func_set(response_function):
+                if not callable(response_function):
+                    raise RuntimeError("Response function not provided")
+                if pos["response_func"] != None:
+                    raise RuntimeError("Response function already set")
+
+                pos["response_func"] = response_function
+                return new_nodes
+
+            return response_func_set
+            
+
 
         def caller(*lists_of_options):
             nonlocal split,pos
@@ -70,39 +123,63 @@ class Template:
                 raise RuntimeError("Node already split")
 
             if len(lists_of_options) == 0:
-                lists_of_options = [[{"text":"\n"}]]
+                lists_of_options = [[{"__text":""}]]
 
-            if len(lists_of_options) == 1 and len(lists_of_options[0]) == 1 :
-                branch = {}
+            if len(lists_of_options) == 1 and len(lists_of_options[0]) == 1:
+                branch = {"options":{},"response_func":None}
                 option = lists_of_options[0][0]
-                pos[option["text"]] = {"branch":branch, "info":option}
+                pos["options"][option["__text"]] = {"branch":branch, "info":option}
                 pos = branch
+
+                
             else:
-                branches = [{} for _ in range(len(lists_of_options))]
+                branches = [{"options":{},"response_func":None} for _ in range(len(lists_of_options))]
                 for branch_index in range(len(branches)):
                     for option in  lists_of_options[branch_index]:
-                        pos[option["text"]] = {"branch":branches[branch_index], "info":option}
+                        pos["options"][option["__text"]] = {"branch":branches[branch_index], "info":option}
 
-                new_nodes = [self.node(branches[branch_index]) for branch_index in range(len(branches))]
+                new_nodes = tuple([self.node(branches[branch_index]) for branch_index in range(len(branches))])
 
                 split = True
-                return tuple(new_nodes)
+                match(self.type):
+                    case "respond":
+                        return response_func_setter(new_nodes)
+                    case "write":
+                        return new_nodes
 
         return caller
 
 """
-initial_communication = Template()
+initial_communication = Template("write")
 base = initial_communication.make_base()
 option = initial_communication.make_option_creator()
 
-main_root, something_else  = base([option("Hi Sir", formal = 1), 
-                                   option("Greetings,")], 
-                                  [option("Honey,")])
+main_root, something_else  = base([option("Dear Sir,"), 
+                                    option("Greetings,")], 
+                                    [option("Hi")])
 
+main_root()
+something_else()
 main_root()
 something_else()
 
 main_root([option("I request more information on my assignment")])
-something_else([option("Theres a bee in the kitchen... OwO.")])
+something_else([option("Tell me more.")])
 
-print(initial_communication.base)"""
+
+initial_response = Template("respond")
+base = initial_response.make_base()
+option = initial_response.make_option_creator()
+
+main_root, something_else  = base([option("Dear Sir,")],
+                                  [option("sir,")])(lambda x:0)
+
+main_root()
+something_else()
+main_root()
+something_else()
+
+main_root([option("here is more")])
+something_else([option("rude!")])
+
+print(initial_response.make_response(""))"""

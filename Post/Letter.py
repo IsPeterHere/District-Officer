@@ -15,7 +15,7 @@ class Letter:
         self.signoff = signoff
 
         self.contents = []
-        self.template_info_contents = []
+        self.__written_template_contents = None
 
         self.sent = False
     
@@ -46,14 +46,14 @@ class Letter:
                 self.contents[-1] = self.contents[-1].replace(self.non_selected_colour[0], '').replace(self.non_selected_colour[1], '')
                 template_reader["choose"]()
 
-                while not template_reader["end"]() and (chosen := template_reader["read"]()) == "\n":
+                while not template_reader["end"]() and (chosen := template_reader["read"]()) == "":
                     template_reader["choose"]()
                     self.contents.append("")
         
             if template_reader["end"]():
                 break
 
-        self.template_info_contents = template_reader["contents"]()
+        self.__written_template_contents = template_reader["contents"]()
 
         if make_signature:
             self.sender_address.set_sign("_______________")
@@ -63,6 +63,11 @@ class Letter:
             self.instance.data.player_signature = signature
 
         self.display(self)
+
+    def get_written_contents(self):
+        if self.__written_template_contents == None:
+            raise RuntimeError("Letter has not been written")
+        return self.__written_template_contents
 
     def send(self,days_till_delivery):
         assert self.sent == False, "Letter has already been sent"
