@@ -100,7 +100,7 @@ class Main(Sequences):
         while True:
             self.instance.next_day()
             while True:
-                user_inut = self.address_book.open_book(type_date=True,other_accepted_inputs = ["day","open"])
+                user_inut = self.address_book.open_book(type_date=True,other_accepted_inputs = ["day","open"],prompt = "<Enter a code to Write Letter>              <Enter 'open' to read next letter in inbox> \n<Enter 'day' to finsh the day>")
                 match user_inut:
                     case "day":
                         break

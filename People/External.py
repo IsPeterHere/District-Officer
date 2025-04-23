@@ -11,12 +11,13 @@ class General_secretariat(Personage):
 
 
 
-        self.create_templates()
+        self.create_writing_templates()
+        self.create_response_template()
 
-    def create_templates(self):
-        self.initial_communication = Template("write")
-        base = self.initial_communication.make_base()
-        option = self.initial_communication.make_option_creator()
+    def create_writing_templates(self):
+        self.initial_communication_template = Template("write")
+        base = self.initial_communication_template.make_base()
+        option = self.initial_communication_template.make_option_creator()
 
         main_root, something_else  = base([option("Hi Sir"), 
                                            option("Greetings,")], 
@@ -30,11 +31,27 @@ class General_secretariat(Personage):
         main_root([option("I request more information on my assignment")])
         something_else([option("Tell me more.")])
 
-    def reply(self):
-        pass 
+    def create_response_template(self):
+        self.response_template = Template("respond")
+        base = self.response_template .make_base()
+        option = self.response_template .make_option_creator()
 
-    def get_template(self):
-        return self.initial_communication
+        main_root, something_else  = base([option("Dear Sir,")],
+                                          [option("sir,")])(lambda _:0)
+
+        main_root()
+        something_else()
+        main_root()
+        something_else()
+
+        main_root([option("here is more")])
+        something_else([option("rude!")])
+
+    def get_writing_template(self):
+        return self.initial_communication_template
+
+    def get_response_template(self):
+        return self.response_template
 
 class You(Personage):
 
@@ -48,8 +65,5 @@ class You(Personage):
                                         "You.")
 
     def proccess_inbox(self):
-        #This is Overriding to disable inherited method.
-        pass 
+        self.move_yesterdays_inbox()
 
-    def add_to_inbox(self,delivery_date,letter):
-        self.__inbox.get(delivery_date,list()).append(letter)

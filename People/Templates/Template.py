@@ -63,7 +63,7 @@ class Template:
 
         return {"choices":choices,"read":read,"left":left,"right":right,"choose":choose,"end":end,"contents":get_contents,"response_function":response_function}
 
-    def make_response(self,received_letter_contents):
+    def write_response(self,received_letter):
         if self.type != "respond":
             raise RuntimeError("template cant respond as it is not of a response type")
 
@@ -75,7 +75,7 @@ class Template:
                 chosen = reader["read"]()
                 reader["choose"]()
             else:
-                reader["response_function"](received_letter_contents)
+                reader["response_function"](received_letter.get_written_template_contents())
                 chosen = reader["read"]()
                 reader["choose"]()
 
@@ -182,4 +182,4 @@ something_else()
 main_root([option("here is more")])
 something_else([option("rude!")])
 
-print(initial_response.make_response(""))"""
+print(initial_response.write_response(""))"""
