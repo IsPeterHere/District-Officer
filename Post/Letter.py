@@ -27,7 +27,7 @@ class Letter:
         return self.__contents
 
 
-    def write(self, type_line1 = False,make_signature = False):
+    def write(self, type_line1 = False,make_signature = False, exitable = True):
         self.display(self,input = False,type = True,signature = False)
 
         template_reader = self.delivery_address.person.get_writing_template().make_reader()
@@ -40,7 +40,11 @@ class Letter:
                 return self.display(self,prompt = "<Enter 'x' To Exit> <Enter 'n' / 'm' To Scroll Choices>")
             return self.display(self,prompt = "<Enter 'x' To Exit> <Press Enter To Select>")
             
-        while (_input :=  display())!= "x":
+        while not template_reader["end"]():
+            _input = display()
+            if _input == "x" and exitable:
+                return False
+            
             if _input == "m":
                 template_reader["right"]()
             elif _input == "n":
@@ -52,9 +56,6 @@ class Letter:
                 while not template_reader["end"]() and (chosen := template_reader["read"]()) == "":
                     template_reader["choose"]()
                     self.__contents.append("")
-        
-            if template_reader["end"]():
-                break
 
         self.__written_template_contents = template_reader["contents"]()
 
@@ -66,6 +67,7 @@ class Letter:
             self.instance.data.player_signature = signature
 
         self.display(self)
+        return True
 
     def get_written_template_contents(self):
         if self.__written_template_contents == None:

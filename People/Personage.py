@@ -1,6 +1,5 @@
 from typing import DefaultDict
 from Post.Adressing import Address
-from datetime import timedelta
 from Post.Letter import Letter
 import random
 
@@ -27,19 +26,18 @@ class Personage():
         assert delivery_date >= self.instance.data.the_date(), "Invalid delivery date"
         self.__inbox[delivery_date].append(letter)
 
-    def get_todays_inbox(self):
-        return self.__inbox[self.instance.data.the_date()]
+    def get_inbox(self,day):
+        return self.__inbox[day]
 
-    def clear_todays_inbox(self):
-        del self.__inbox[self.instance.data.the_date()]
+    def set_inbox(self,day,inbox):
+        self.__inbox[day] = inbox
 
-    def move_yesterdays_inbox(self):
-        self.__inbox[self.instance.data.the_date()] += self.__inbox[self.instance.data.the_date() - timedelta(days = 1)]
+    def clear_inbox(self,day):
+        del self.__inbox[day]
 
     def proccess_inbox(self):
-        inbox = self.get_todays_inbox()
-        self.clear_todays_inbox()
-
+        inbox = self.get_inbox(self.instance.data.the_date())
+        self.clear_inbox(self.instance.data.the_date())
         for letter in inbox:
             self.reply(letter)
 
@@ -47,6 +45,8 @@ class Personage():
         reply_letter = Letter(self.instance,self.get_address(),letter.sender_address,self.signoff) 
         reply_letter.set_contents(self.get_response_template().write_response(letter))
         reply_letter.send(self.get_delivery_time())
+        
+
 
     def get_delivery_time(self):
         return random.randint(0,1)

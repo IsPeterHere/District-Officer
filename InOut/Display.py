@@ -26,7 +26,7 @@ class DisplayObjects:
 
     def show_address_book(self,address_book,type_date):
 
-        top_text = "Address Book --"+" "*27+"-- Inbox. "+str(len(address_book.you.get_todays_inbox()))+" items --"+" "*27
+        top_text = "Address Book --"+" "*27+"-- Inbox. "+str(len(address_book.you.get_inbox(address_book.the_date())))+" items --"+" "*27
         date = "-- {0:%d} {0:%b}. {0:%Y}".format(address_book.the_date())
 
         if type_date:

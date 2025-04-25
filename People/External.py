@@ -1,5 +1,6 @@
 from People.Templates.Template import Template 
 from People.Personage import Personage
+from datetime import timedelta
 
 class General_secretariat(Personage):
 
@@ -32,12 +33,18 @@ class General_secretariat(Personage):
         something_else([option("Tell me more.")])
 
     def create_response_template(self):
+
+        def formality(letter_contents):
+            if "formal" in letter_contents:
+                return 0
+            return 1
+
         self.response_template = Template("respond")
         base = self.response_template .make_base()
         option = self.response_template .make_option_creator()
 
         main_root, something_else  = base([option("Dear Sir,")],
-                                          [option("sir,")])(lambda _:0)
+                                          [option("sir,")])(formality)
 
         main_root()
         something_else()
@@ -63,7 +70,20 @@ class You(Personage):
                                         district_name+" District Administration",
                                         "New Street Buildings Q.K.8",
                                         "You.")
+    def move_yesterdays_inbox(self):
+        self.set_inbox(self.instance.data.the_date(),self.get_inbox(self.instance.data.the_date())+self.get_inbox(self.instance.data.the_date() - timedelta(days = 1)))
+        self.clear_inbox(self.instance.data.the_date() - timedelta(days = 1))
+
+    def pop_inbox(self):
+        inbox = self.get_inbox(self.instance.data.the_date())
+        if len(inbox) == 0:
+            return None
+
+        letter = inbox.pop()
+        self.set_inbox(self.instance.data.the_date(),inbox)
+        return letter
+
 
     def proccess_inbox(self):
         self.move_yesterdays_inbox()
-
+        
