@@ -1,5 +1,6 @@
 from People.Templates.Template import Template 
 from People.Personage import Personage
+from datetime import timedelta
 
 class General_secretariat(Personage):
 
@@ -11,12 +12,13 @@ class General_secretariat(Personage):
 
 
 
-        self.create_templates()
+        self.create_writing_templates()
+        self.create_response_template()
 
-    def create_templates(self):
-        self.initial_communication = Template()
-        base = self.initial_communication.make_base()
-        option = self.initial_communication.make_option_creator()
+    def create_writing_templates(self):
+        self.initial_communication_template = Template("write")
+        base = self.initial_communication_template.make_base()
+        option = self.initial_communication_template.make_option_creator()
 
         main_root, something_else  = base([option("Hi Sir"), 
                                            option("Greetings,")], 
@@ -30,11 +32,33 @@ class General_secretariat(Personage):
         main_root([option("I request more information on my assignment")])
         something_else([option("Tell me more.")])
 
-    def reply(self):
-        pass 
+    def create_response_template(self):
 
-    def get_template(self):
-        return self.initial_communication
+        def formality(letter_contents):
+            if "formal" in letter_contents:
+                return 0
+            return 1
+
+        self.response_template = Template("respond")
+        base = self.response_template .make_base()
+        option = self.response_template .make_option_creator()
+
+        main_root, something_else  = base([option("Dear Sir,")],
+                                          [option("sir,")])(formality)
+
+        main_root()
+        something_else()
+        main_root()
+        something_else()
+
+        main_root([option("here is more")])
+        something_else([option("rude!")])
+
+    def get_writing_template(self):
+        return self.initial_communication_template
+
+    def get_response_template(self):
+        return self.response_template
 
 class You(Personage):
 
@@ -46,10 +70,20 @@ class You(Personage):
                                         district_name+" District Administration",
                                         "New Street Buildings Q.K.8",
                                         "You.")
+    def move_yesterdays_inbox(self):
+        self.set_inbox(self.instance.data.the_date(),self.get_inbox(self.instance.data.the_date())+self.get_inbox(self.instance.data.the_date() - timedelta(days = 1)))
+        self.clear_inbox(self.instance.data.the_date() - timedelta(days = 1))
+
+    def pop_inbox(self):
+        inbox = self.get_inbox(self.instance.data.the_date())
+        if len(inbox) == 0:
+            return None
+
+        letter = inbox.pop()
+        self.set_inbox(self.instance.data.the_date(),inbox)
+        return letter
+
 
     def proccess_inbox(self):
-        #This is Overriding to disable inherited method.
-        pass 
-
-    def add_to_inbox(self,delivery_date,letter):
-        self.__inbox.get(delivery_date,list()).append(letter)
+        self.move_yesterdays_inbox()
+        

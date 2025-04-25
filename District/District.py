@@ -48,7 +48,7 @@ class Place:
         self.tile.claim(self)
 
         if name == None:
-            self.name = self.names.pop(random.randint(0,len(self.names)))
+            self.name = self.names.pop(random.randint(0,len(self.names)-1))
         else:
             self.name = name
 

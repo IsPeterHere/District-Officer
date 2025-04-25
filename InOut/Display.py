@@ -16,7 +16,7 @@ class DisplayObjects:
                   " "*64 + letter.sender_address.line2,
                   " "*68 + "{0:%b}. {0:%d}-{0:%y}".format(letter.date)],[0,1,2]) if show_address else ([],[])
         
-        full_letter,indices = (full_letter+letter.contents,indices+[7+x for x in range(len(letter.contents))])
+        full_letter,indices = (full_letter+letter.get_contents(),indices+[7+x for x in range(len(letter.get_contents()))])
        
         full_letter,indices = (full_letter + [
                   " "*60 + letter.signoff + ",",
@@ -26,7 +26,7 @@ class DisplayObjects:
 
     def show_address_book(self,address_book,type_date):
 
-        top_text = "Address Book --"+" "*27+"-- Inbox. "+str(len(address_book.you.get_todays_inbox()))+" items --"+" "*27
+        top_text = "Address Book --"+" "*27+"-- Inbox. "+str(len(address_book.you.get_inbox(address_book.the_date())))+" items --"+" "*27
         date = "-- {0:%d} {0:%b}. {0:%Y}".format(address_book.the_date())
 
         if type_date:
@@ -94,3 +94,4 @@ class Display(Terminal,DisplayObjects):
             self.clear()
 
             return user_input
+        self.clear()

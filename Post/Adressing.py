@@ -47,13 +47,12 @@ class Address_book:
                   type_date = False,
                   accept_codes = True,
                   other_accepted_inputs = [],
-                  prompt = "<Enter a code to Write Letter>              <Enter 'open' to read next letter in inbox> \n<Enter 'day' to finsh the day>"):
+                  prompt = ""):
 
         entered = self.display(self,prompt,type = type_date).replace("0","").lower()
         while not (((entered in self.__addresses.keys()) and accept_codes) or (entered in other_accepted_inputs)):
             entered = self.display(self,prompt+"              <INVALID INPUT>").replace("0","").lower()
 
-        self.display.clear()
         return entered
 
     def add(self,address):

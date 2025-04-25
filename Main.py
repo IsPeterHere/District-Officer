@@ -77,7 +77,7 @@ class Main(Sequences):
             self.instance.data.district.name = "test_district"
             self.instance.you.create_address(self.instance.data.district.name)
             users_first_letter = Letter(self.instance,self.instance.you.get_address(),self.instance.general_secretariat.get_address())
-            users_first_letter.set_contents("Hi, can i have more details on my assignment.")
+            users_first_letter.write(make_signature=True,exitable = False)
             users_first_letter.send(days_till_delivery=1)
 
         else:
@@ -88,7 +88,7 @@ class Main(Sequences):
             self.address_book.open_book(prompt="<Enter No. to Write Letter (i.e 78 or 0078)>")
 
             users_first_letter = Letter(self.instance,self.instance.you.get_address(),self.instance.general_secretariat.get_address())
-            users_first_letter.write(make_signature=True)
+            users_first_letter.write(make_signature=True,exitable = False)
             users_first_letter.send(days_till_delivery=1)
 
             self.address_book.open_book(accept_codes=False,other_accepted_inputs = ["day"],prompt="<It May Take a Day or More For a Reply to Arrive In Your Inbox>   <Enter 'day' to Finsh The Day> \n")
@@ -97,20 +97,34 @@ class Main(Sequences):
 
 
     def main_loop(self):
+
+        def display_book(typed = False):
+            open_letter_prompt = "<Enter \'o\' to read next letter in inbox>" if self.instance.you.get_inbox(self.instance.data.the_date()) else "<Inbox Empty>"
+            return self.address_book.open_book(type_date=typed,other_accepted_inputs = ["d","o"],prompt = f"<Enter a code to Write Letter>              {open_letter_prompt} \n<Enter 'd' to finsh the day>")
+
         while True:
             self.instance.next_day()
+            user_inut =display_book(typed = True)
+
             while True:
-                user_inut = self.address_book.open_book(type_date=True,other_accepted_inputs = ["day","open"])
                 match user_inut:
-                    case "day":
+                    case "d":
                         break
-                    case "open":
-                        pass
+                    case "o":
+                        letter = self.instance.you.pop_inbox()
+                        if letter != None:
+                            self.instance.display(letter)
+
                     case _:
                         writing_to = self.address_book.get_Addresses()[user_inut]
                         letter = Letter(self.instance, self.instance.you.get_address(),writing_to)
-                        letter.write()
-                        letter.send(days_till_delivery=1)
+                        written = letter.write()
+                        if written:
+                            letter.send(days_till_delivery=1)
+
+                user_inut = display_book()
+
+                
             
         
 if __name__ == "__main__":
