@@ -37,8 +37,8 @@ class Letter:
             _next = template_reader["read"]()
             self.__contents[-1] = self.non_selected_colour[0]+_next+self.non_selected_colour[1]
             if len(template_reader["choices"]()) > 1:
-                return self.display(self,prompt = "<Enter 'x' To Exit> <Enter 'n' / 'm' To Scroll Choices>")
-            return self.display(self,prompt = "<Enter 'x' To Exit> <Press Enter To Select>")
+                return self.display(self,prompt = "<Enter 'x' To Exit> <Enter 'n' / 'm' To Scroll Choices> <Press Enter To Select>",signature = False)
+            return self.display(self,prompt = "<Enter 'x' To Exit> <Press Enter To Select>",signature = False)
             
         while not template_reader["end"]():
             _input = display()
@@ -66,8 +66,14 @@ class Letter:
             self.sender_address.set_sign(signature)
             self.instance.data.player_signature = signature
 
-        self.display(self)
-        return True
+        if exitable:
+            _input = self.display(self,prompt =  "<Enter 'x' To Exit> <Press Enter To Send>")
+            if _input == "x":
+                return False
+            return True
+        else:
+            self.display(self,prompt =  "<Press Enter To Send>")
+            return True
 
     def get_written_template_contents(self):
         if self.__written_template_contents == None:

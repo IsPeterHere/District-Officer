@@ -34,7 +34,7 @@ class Sequences:
 
         received_letter.set_contents(
                    "Good Sir. ","","",
-                   "As i am sure you are aware the Western Territories(WT) are, as of the time of writing now ",
+                   "As i am sure you are aware the Western Territories(WT) are, as of the time of writing, now ",
                    "the secretariat's responsibility.",
                    "The Advisory Political Committee has assigned you and a small selection of staff to",
                    "administer the largely rural district of ________")
@@ -44,7 +44,7 @@ class Sequences:
 
         received_letter.set_contents(
                    "Good Sir. ","","",
-                   "As i am sure you are aware the Western Territories(WT) are, as of the time of writing now ",
+                   "As i am sure you are aware the Western Territories(WT) are, as of the time of writing, now ",
                    "the secretariat's responsibility.",
                    "The Advisory Political Committee has assigned you and a small selection of staff to",
                    f"administer the largely rural district of {district_name}. Congratulations.",
@@ -91,7 +91,7 @@ class Main(Sequences):
             users_first_letter.write(make_signature=True,exitable = False)
             users_first_letter.send(days_till_delivery=1)
 
-            self.address_book.open_book(accept_codes=False,other_accepted_inputs = ["day"],prompt="<It May Take a Day or More For a Reply to Arrive In Your Inbox>   <Enter 'day' to Finsh The Day> \n")
+            self.address_book.open_book(accept_codes=False,other_accepted_inputs = ["d"],prompt="<It May Take a Day or More For a Reply to Arrive In Your Inbox>   <Enter 'd' to Finsh The Day> \n")
 
         self.main_loop()
 
