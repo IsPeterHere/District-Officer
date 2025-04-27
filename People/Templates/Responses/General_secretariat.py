@@ -4,7 +4,7 @@ class Responding:
     def create_response_template(self):
 
         def formality(letter_contents):
-            if "formal" in letter_contents:
+            if letter_contents["hints"][0]:
                 return 0
             return 1
 
@@ -12,13 +12,8 @@ class Responding:
         base = self.response_template .make_base()
         option = self.response_template .make_option_creator()
 
-        main_root, something_else  = base([option("Dear Sir,")],
+        hints, no_hints  = base([option("Dear Sir,")],
                                           [option("sir,")])(formality)
 
-        main_root()
-        something_else()
-        main_root()
-        something_else()
-
-        main_root([option("here is more")])
-        something_else([option("rude!")])
+        hints()
+        hints()

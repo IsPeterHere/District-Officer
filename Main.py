@@ -47,7 +47,8 @@ class Sequences:
                    "As i am sure you are aware the Western Territories(WT) are, as of the time of writing, now ",
                    "the secretariat's responsibility.",
                    "The Advisory Political Committee has assigned you and a small selection of staff to",
-                   f"administer the largely rural district of {district_name}. Congratulations.",
+                   f"administer the largely rural district of {district_name}. To carry out these duties you are hereby",
+                   "promoted to the grade of District Officer. Congratulations.",
                    "",
                    "Please contact the General Secretariat for further details.")
 
@@ -85,7 +86,7 @@ class Main(Sequences):
             self.instance.data.district.name = self.intro()
             self.instance.you.create_address(self.instance.data.district.name)
 
-            self.address_book.open_book(prompt="<Enter No. to Write Letter (i.e 78 or 0078)>")
+            self.address_book.open_book(prompt="<Enter No. to Write Letter (i.e 1 or 0001)>")
 
             users_first_letter = Letter(self.instance,self.instance.you.get_address(),self.instance.general_secretariat.get_address())
             users_first_letter.write(make_signature=True,exitable = False)

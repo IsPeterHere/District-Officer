@@ -32,15 +32,17 @@ class Letter:
 
         template_reader = self.delivery_address.person.get_writing_template().make_reader()
         self.__contents = [""]
+        chosen_contents = [""]
 
         def display():
             _next = template_reader["read"]()
-            self.__contents[-1] = self.non_selected_colour[0]+_next+self.non_selected_colour[1]
+            self.__contents[-1] += self.non_selected_colour[0]+_next+self.non_selected_colour[1]
             if len(template_reader["choices"]()) > 1:
                 return self.display(self,prompt = "<Enter 'x' To Exit> <Enter 'n' / 'm' To Scroll Choices> <Press Enter To Select>",signature = False)
             return self.display(self,prompt = "<Enter 'x' To Exit> <Press Enter To Select>",signature = False)
             
         while not template_reader["end"]():
+            self.__contents = chosen_contents.copy()
             _input = display()
             if _input == "x" and exitable:
                 return False
@@ -50,12 +52,14 @@ class Letter:
             elif _input == "n":
                 template_reader["left"]()
             elif _input == "":
-                self.__contents[-1] = self.__contents[-1].replace(self.non_selected_colour[0], '').replace(self.non_selected_colour[1], '')
+                chosen_contents[-1] += template_reader["read"]()
                 template_reader["choose"]()
 
                 while not template_reader["end"]() and (chosen := template_reader["read"]()) == "":
                     template_reader["choose"]()
                     self.__contents.append("")
+                    chosen_contents.append("")
+
 
         self.__written_template_contents = template_reader["contents"]()
 
