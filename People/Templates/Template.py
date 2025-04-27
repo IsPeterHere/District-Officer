@@ -78,7 +78,7 @@ class Template:
                 reader["response_function"](received_letter.get_written_template_contents())
                 chosen = reader["read"]()
                 reader["choose"]()
-
+            
             if chosen == "":
                 contents.append("")
             else:

@@ -1,8 +1,9 @@
-from People.Templates.Template import Template 
 from People.Personage import Personage
 from datetime import timedelta
+from People.Templates.Writing.General_secretariat import Writng
+from People.Templates.Responses.General_secretariat import Responding
 
-class General_secretariat(Personage):
+class General_secretariat(Personage,Writng,Responding):
 
     def __init__(self,instance):
         Personage.__init__(self,instance)
@@ -14,45 +15,6 @@ class General_secretariat(Personage):
 
         self.create_writing_templates()
         self.create_response_template()
-
-    def create_writing_templates(self):
-        self.initial_communication_template = Template("write")
-        base = self.initial_communication_template.make_base()
-        option = self.initial_communication_template.make_option_creator()
-
-        main_root, something_else  = base([option("Hi Sir"), 
-                                           option("Greetings,")], 
-                                          [option("Hi,")])
-
-        main_root()
-        something_else()
-        main_root()
-        something_else()
-
-        main_root([option("I request more information on my assignment")])
-        something_else([option("Tell me more.")])
-
-    def create_response_template(self):
-
-        def formality(letter_contents):
-            if "formal" in letter_contents:
-                return 0
-            return 1
-
-        self.response_template = Template("respond")
-        base = self.response_template .make_base()
-        option = self.response_template .make_option_creator()
-
-        main_root, something_else  = base([option("Dear Sir,")],
-                                          [option("sir,")])(formality)
-
-        main_root()
-        something_else()
-        main_root()
-        something_else()
-
-        main_root([option("here is more")])
-        something_else([option("rude!")])
 
     def get_writing_template(self):
         return self.initial_communication_template
