@@ -16,7 +16,7 @@ class DisplayObjects:
                   " "*64 + letter.sender_address.line2,
                   " "*68 + "{0:%b}. {0:%d}-{0:%y}".format(letter.date)],[0,1,2]) if show_address else ([],[])
         
-        full_letter,indices = (full_letter+letter.get_contents(),indices+[7+x for x in range(len(letter.get_contents()))])
+        full_letter,indices = (full_letter+letter.get_contents(),indices+[6+x for x in range(len(letter.get_contents()))])
        
         full_letter,indices = (full_letter + [
                   " "*60 + letter.signoff + ",",

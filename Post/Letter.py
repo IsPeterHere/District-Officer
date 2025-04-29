@@ -2,7 +2,7 @@ from datetime import timedelta
 
 class Letter:
 
-    number_of_lines = 10
+    number_of_lines = 12
     non_selected_colour = ["\033[38;5;243m","\033[0m"]
 
     def __init__(self,instance,sender_address,delivery_address = None, signoff = "Yours sincerely"):
@@ -28,7 +28,7 @@ class Letter:
 
 
     def write(self, type_line1 = False,make_signature = False, exitable = True):
-        self.display(self,input = False,type = True,signature = False)
+        self.display(self,input = False,type = type_line1,signature = False)
 
         template_reader = self.delivery_address.person.get_writing_template().make_reader()
         self.__contents = [""]
@@ -42,7 +42,6 @@ class Letter:
             return self.display(self,prompt = "<Enter 'x' To Exit> <Press Enter To Select>",signature = False)
             
         while not template_reader["end"]():
-            self.__contents = chosen_contents.copy()
             _input = display()
             if _input == "x" and exitable:
                 return False
@@ -55,10 +54,12 @@ class Letter:
                 chosen_contents[-1] += template_reader["read"]()
                 template_reader["choose"]()
 
-                while not template_reader["end"]() and (chosen := template_reader["read"]()) == "":
+                while not template_reader["end"]() and template_reader["read"]() == "":
                     template_reader["choose"]()
                     self.__contents.append("")
                     chosen_contents.append("")
+
+            self.__contents = chosen_contents.copy()
 
 
         self.__written_template_contents = template_reader["contents"]()

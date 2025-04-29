@@ -3,7 +3,7 @@ from typing import DefaultDict
 
 class Template:
 
-    max_width = 109
+    max_width = 99
 
     def __init__(self,type):
         match(type):
@@ -70,7 +70,10 @@ class Template:
         contents = [""]
 
         reader = self.make_reader()
+        ch = 0
         while not reader["end"]():
+
+
             if len(reader["choices"]()) == 1:
                 chosen = reader["read"]()
                 reader["choose"]()
@@ -78,10 +81,27 @@ class Template:
                 reader["response_function"](received_letter.get_written_template_contents())
                 chosen = reader["read"]()
                 reader["choose"]()
-            
+        
+
             if chosen == "":
                 contents.append("")
+                ch = 0
             else:
+                while ch + len(chosen) > self.max_width:
+
+                    pivot = self.max_width - ch
+                    while pivot >= 1 and chosen[pivot] != " ":
+                        pivot -= 1
+
+                    if pivot == 0:
+                        raise RuntimeError(f"Word exceeded maximum with of {self.max_width}")
+
+                    contents[-1] += chosen[:pivot+1]
+                    contents.append("")
+                    chosen = chosen[pivot+1:]
+                    ch = 0
+
+                ch += len(chosen)
                 contents[-1] += chosen 
 
         return contents
