@@ -1,4 +1,6 @@
-from People.External import General_secretariat,You
+from People.General_secretariat import General_secretariat
+from People.You import You
+
 from District.District import District
 from InOut.Display import Display
 from datetime import date, timedelta

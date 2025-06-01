@@ -1,5 +1,5 @@
 import random 
-import Tile
+from District.Tile import Tile
 
 class Map:
 
