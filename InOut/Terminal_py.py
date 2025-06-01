@@ -1,5 +1,3 @@
-from cgitb import text
-from io import TextIOBase
 import shutil
 from threading import Thread
 from time import sleep
@@ -10,11 +8,11 @@ class Terminal():
     def __init__(self):
         self.size = shutil.get_terminal_size()
         self.__clear_terminal()
-
+        
         self.width = self.size.columns
-        self.height = self.size.lines-2
+        self.height = self.size.lines-1
 
-        self.text = [[" " for x in range(self.size.columns)] for x in range(self.size.lines-2)]
+        self.text = [[" " for _ in range(self.size.columns)] for _ in range(self.size.lines-1)]
 
         self.calling = None
         self.__dependencies = []
@@ -55,7 +53,7 @@ class Terminal():
         os.system('cls' if os.name == 'nt' else 'clear')
 
     def __clear_text(self):
-        self.text = [[" " for x in range(self.size.columns)] for x in range(self.size.lines-2)]
+        self.text = [[" " for x in range(self.size.columns)] for x in range(self.size.lines-1)]
 
     def clear(self):
         self.__dependencies = []
@@ -91,7 +89,12 @@ class Text_box:
 
 
     def __call__(self,line,text):
-        self.text[line] = ""
+
+        if len(text) > self.end-self.start:
+            raise RuntimeError("Too wide for box")
+        if line > self.line_end - self.line_start:
+            raise RuntimeError("Too tall for box")
+
         self.text[line] = text
         self.terminal.change_made()
 

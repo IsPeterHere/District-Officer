@@ -2,7 +2,7 @@ import random
 import math
 
 
-class Place:
+class Tile:
 
     names = []
     with open("Resources/GermanTownNames.txt") as f:
@@ -41,7 +41,3 @@ class Place:
 
     def __str__(self):
         return "<TILE> " + self.name
-
-    
-
-Place(None,None)
