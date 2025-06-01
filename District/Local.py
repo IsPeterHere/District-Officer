@@ -1,6 +1,10 @@
 class Local:
 
-    def __init__(self):
+    def __init__(self,infastructure):
+
+        self.infastructure = infastructure
+
+
         self.birth_rate = 0
         self.immigration_rate = 0
 
