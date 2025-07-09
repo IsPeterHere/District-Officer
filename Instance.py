@@ -3,6 +3,7 @@ from People.You import You
 
 from District.District import District
 from InOut.Display import Display
+from InOut.TerminalInOut import In_Out
 from datetime import date, timedelta
 
 class Date:
@@ -49,8 +50,7 @@ class Instance:
     size = 10
 
     def __init__(self):
-
-        self.display = Display()
+        self.display = Display(In_Out())
         self.data = Data()
 
         self.data.the_date = Date(self.year, self.month, self.day)

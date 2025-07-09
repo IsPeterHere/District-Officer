@@ -16,15 +16,6 @@ class Sequences:
 
         self.wait_for_confirmation()
 
-    def start_up(self):
-
-        start_text = self.instance.display.text_box(6,20,20,100)
-        start_text(7,"Press Enter to Start")
-        start_key = self.instance.display.get_input()
-        self.instance.display.clear()
-
-        return start_key
-
     def wait_for_confirmation(self):
         self.instance.display.get_input("<Press Enter to Confirm Read>")
         self.instance.display.clear()
@@ -66,7 +57,7 @@ class Main(Sequences):
         self.address_book.add(self.instance.general_secretariat.get_address())
 
     def start(self):
-        start_key = self.start_up()
+        start_key = self.instance.display("Start","Press Enter")
 
         if "s" in start_key:
             self.instance.display.typing = False
