@@ -30,7 +30,6 @@ class Address_book:
 
     def __init__(self,instance):
         self.instance = instance
-        self.display = self.instance.display
         self.the_date = self.instance.data.the_date
         self.you = self.instance.you
         self.__addresses = dict()
@@ -44,14 +43,19 @@ class Address_book:
         return self.__addresses[No]
 
     def open_book(self,
-                  type_date = False,
-                  accept_codes = True,
-                  other_accepted_inputs = [],
-                  prompt = ""):
+                  write = True,
+                  read = True,
+                  day = True,
+                  typed = False):
+        
+        
+        if not self.instance.you.get_inbox(self.instance.data.the_date()):
+            read = False
 
-        entered = self.display(self,prompt,type = type_date).replace("0","").lower()
-        while not (((entered in self.__addresses.keys()) and accept_codes) or (entered in other_accepted_inputs)):
-            entered = self.display(self,prompt+"              <INVALID INPUT>").replace("0","").lower()
+        entered = self.instance.display(self,"Address Book",write = write,day=day,read=read,type = typed).replace("0","").lower()
+        while not (((entered in self.__addresses.keys()) and write) or not (entered == "o" and read) or not (entered == "d" and day)):
+            self.instance.display.NOTE_invalid_input()
+            entered = self.instance.display(self,"Address Book",write = write,day=day,read=read,type = typed).replace("0","").replace("0","").lower()
 
         return entered
 

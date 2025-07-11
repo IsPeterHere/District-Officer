@@ -5,7 +5,7 @@ import math
 class Tile:
 
     names = []
-    with open("Resources/GermanTownNames.txt") as f:
+    with open("Resources/GermanTownNames.txt",encoding='utf-8' ) as f:
         for line in f.readlines():
             names.append(line)
 

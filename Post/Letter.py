@@ -28,7 +28,7 @@ class Letter:
 
 
     def write(self, type_line1 = False,make_signature = False, exitable = True):
-        self.display(self,input = False,type = type_line1,signature = False)
+        self.display(self,None,input = False,type = type_line1,signature = False)
 
         template_reader = self.delivery_address.person.get_writing_template().make_reader()
         self.__contents = [""]
@@ -38,8 +38,10 @@ class Letter:
             _next = template_reader["read"]()
             self.__contents[-1] += self.non_selected_colour[0]+_next+self.non_selected_colour[1]
             if len(template_reader["choices"]()) > 1:
-                return self.display(self,prompt = "<Enter 'x' To Exit> <Enter 'n' / 'm' To Scroll Choices> <Press Enter To Select>",signature = False)
-            return self.display(self,prompt = "<Enter 'x' To Exit> <Press Enter To Select>",signature = False)
+                scroll = True
+            scroll = False
+
+            return self.display(self,"Letter",send = False,select = True,scroll = scroll,exit=exitable,signature = False)
             
         while not template_reader["end"]():
             _input = display()
@@ -66,18 +68,18 @@ class Letter:
 
         if make_signature:
             self.sender_address.set_sign("_______________")
-            while (signature := self.display(self,"<Enter Signature (PERMANENT)>")) =="":
+            while (signature := self.display(self,"Text Entry",prompt = "<Enter Signature (PERMANENT)>")) =="":
                    pass
             self.sender_address.set_sign(signature)
             self.instance.data.player_signature = signature
 
         if exitable:
-            _input = self.display(self,prompt =  "<Enter 'x' To Exit> <Press Enter To Send>")
+            _input = self.display(self,"Letter",send = True,select = False,scroll = False,exit=True)
             if _input == "x":
                 return False
             return True
         else:
-            self.display(self,prompt =  "<Press Enter To Send>")
+            self.display(self,"Letter",send = True,select = False,scroll = False,exit=False)
             return True
 
     def get_written_template_contents(self):
