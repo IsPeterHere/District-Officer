@@ -1,5 +1,6 @@
 from InOut.Terminal_py import Terminal
 from time import sleep
+from time import time
 from InOut.InOutTemplate import ABSTRACT_IN_OUT
 
 class In_Out(ABSTRACT_IN_OUT,Terminal):
@@ -7,6 +8,17 @@ class In_Out(ABSTRACT_IN_OUT,Terminal):
     def __init__(self):
         Terminal.__init__(self)
         self.input_prompt_box = None
+    
+    def NOTE_invalid_input(self):
+        print("INVALID INPUT")
+        
+    def OUT_show_debug(self):
+        
+        debug = self.text_box(6,20,20,100)
+        debug.type(0,"DEBUG -- "+str(time()),speed = 0.04)
+        debug(1,str(self.size)+"   -2 lines")
+        self.debug = True
+        self.typing = False
         
     def OUT_start_up(self):
         self.clear()
@@ -65,17 +77,28 @@ class In_Out(ABSTRACT_IN_OUT,Terminal):
 
     
     def IN_Press_Enter(self):
-        start_key = self.get_input("Press Enter To Continue")
-        return start_key
+        return self.get_input("<Press Enter To Continue>")
     
     def IN_Text_Entry(self,prompt):
-        pass
+        return self.get_input(prompt)
     
-    def IN_Letter(self):
-        pass
+    def IN_Letter(self,send,exit,scroll,select):
+        send_letter_prompt = "<Press Enter To Send>" if send else ""
+        exit_letter_prompt = "<Enter 'x' To Exit>" if exit else ""
+        scroll_prompt = "<Enter 'n' / 'm' To Scroll Choices>" if scroll else ""
+        select_prompt = "<Press Enter To Select>" if select else ""
+        prompt = f"{exit_letter_prompt}{scroll_prompt}{select_prompt}{send_letter_prompt}"
+        return self.get_input(prompt)
+
     
-    def IN_Address_Book(self):
-        pass
+    def IN_Address_Book(self,read,write,day):
+        
+        open_letter_prompt = "<Enter \'o\' to read next letter in inbox>" if read else ""
+        write_letter_prompt = "<Enter a code to Write Letter>" if write else ""
+        day_prompt = "<Enter 'd' to finsh the day>" if day else ""
+        prompt = f"{write_letter_prompt}              {open_letter_prompt} \n{day_prompt}"
+        
+        return self.get_input(prompt)
     
     def input_prompt(self,prompt):
         if prompt != "":
