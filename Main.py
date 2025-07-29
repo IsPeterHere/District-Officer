@@ -3,38 +3,7 @@ from Post.Letter import Letter
 from Instance import Instance
 
 
-
-class Sequences:
-
-
-    def intro(self):
-        received_letter = Letter(self.instance,self.instance.general_secretariat.get_address())
-
-        received_letter.set_contents(
-                   "Good Sir. ","","",
-                   "As i am sure you are aware the Western Territories(WT) are, as of the time of writing, now ",
-                   "the secretariat's responsibility.",
-                   "The Advisory Political Committee has assigned you and a small selection of staff to",
-                   "administer the largely rural district of ________")
-
-        while (district_name :=  self.instance.display(received_letter,"Text Entry", prompt = "<Enter District Name>",type = True)) == "":
-            pass
-
-        received_letter.set_contents(
-                   "Good Sir. ","","",
-                   "As i am sure you are aware the Western Territories(WT) are, as of the time of writing, now ",
-                   "the secretariat's responsibility.",
-                   "The Advisory Political Committee has assigned you and a small selection of staff to",
-                   f"administer the largely rural district of {district_name}. To carry out these duties you are hereby",
-                   "promoted to the grade of District Officer. Congratulations.",
-                   "",
-                   "Please contact the General Secretariat for further details.")
-
-        self.instance.display(received_letter,"Press Enter")
-        return district_name
-
-
-class Main(Sequences):
+class Main:
 
     def __init__(self):
 
@@ -45,10 +14,10 @@ class Main(Sequences):
 
     def start(self):
         start_key = self.instance.display("Start","Press Enter")
-
+        
         if "d" in start_key:
             self.instance.display("Debug","Press Enter")
-
+            
         if "o" in start_key:
             self.instance.data.district.name = "test_district"
             self.instance.you.create_address(self.instance.data.district.name)
@@ -71,31 +40,67 @@ class Main(Sequences):
 
         self.main_loop()
 
+    
+    def intro(self):
+        received_letter = Letter(self.instance,self.instance.general_secretariat.get_address())
+    
+        received_letter.set_contents(
+                   "Good Sir. ","","",
+                   "As i am sure you are aware the Western Territories(WT) are now, as of the time of writing, ",
+                   "the secretariat's responsibility.",
+                   "The Advisory Political Committee has assigned you and a small selection of staff to",
+                   "administer the largely rural district of ________")
+    
+        while (district_name :=  self.instance.display(received_letter,"Text Entry", prompt = "<Enter District Name>",type = True)) == "":
+            pass
+    
+        received_letter.set_contents(
+                   "Good Sir. ","","",
+                   "As i am sure you are aware the Western Territories(WT) are now, as of the time of writing, ",
+                   "the secretariat's responsibility.",
+                   "The Advisory Political Committee has assigned you and a small selection of staff to",
+                   f"administer the largely rural district of {district_name}. To carry out these duties you are hereby",
+                   "promoted to the grade of District Officer. Congratulations.",
+                   "",
+                   "Please contact the General Secretariat for further details.")
+    
+        self.instance.display(received_letter,"Press Enter")
+        return district_name
 
     def main_loop(self):
 
 
         while True:
             self.instance.next_day()
-            user_inut = self.address_book.open_book(typed = True)
+            user_input = self.address_book.open_book(typed = True)
 
             while True:
-                match user_inut:
+                match user_input:
                     case "d":
                         break
                     case "o":
                         letter = self.instance.you.pop_inbox()
-                        if letter != None:
-                            self.instance.display(letter,"Press Enter")
-
+                        while user_input != "x":
+                            user_input = self.instance.display(letter,"Read Letter", exit = True, attachments = letter.attachments)
+                            if user_input == "a":
+                                while True:
+                                    user_input = letter.display_attachments()
+                                    if user_input == "x":
+                                        break
+                                    l = list(letter.attachments.keys())
+                                    self.instance.display(letter.attachments[l[int(user_input)-1]],"Press Enter"),
+                                                          
+                                user_input= "a"
+                                    
+                                
                     case _:
-                        writing_to = self.address_book.get_Addresses()[user_inut]
+                        writing_to = self.address_book.get_Addresses()[user_input]
                         letter = Letter(self.instance, self.instance.you.get_address(),writing_to)
                         written = letter.write()
                         if written:
                             letter.send(days_till_delivery=1)
 
-                user_inut = self.address_book.open_book()
+                user_input = self.address_book.open_book()
 
                 
             
