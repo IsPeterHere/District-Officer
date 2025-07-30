@@ -17,7 +17,7 @@ class Letter:
         self.__contents = []
         self.__written_template_contents = None
         
-        self.attachments = {"test":self}
+        self.attachments = {}
 
         self.sent = False
     

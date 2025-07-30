@@ -43,7 +43,7 @@ class Personage():
 
     def reply(self,letter):
         reply_letter = Letter(self.instance,self.get_address(),letter.sender_address,self.signoff) 
-        reply_letter.set_contents(*self.get_response_template().write_response(letter))
+        self.get_response_template().write_response(reply_letter,letter)
         reply_letter.send(self.get_delivery_time())
         
 
