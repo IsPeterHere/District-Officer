@@ -1,5 +1,6 @@
 from People.Personage import Personage
 from People.Templates.Template import Template 
+from People.Hiring import Person
 
 class Writng:
     def initial_communication(self):
@@ -32,7 +33,8 @@ class Responding:
         response_template = Template("respond")
         base = response_template .make_base()
         text_option = response_template .make_text_option_creator()
-
+        function_option = response_template .make_function_option_creator()
+        
         hints, no_hints  = base([text_option("Dear Sir, your assignment is as follows,")],
                                           [text_option("sir...")])(give_extra_hints)
 
@@ -49,9 +51,15 @@ class Responding:
         hints([text_option("There are 3 candidates for the position of your secretary forwarded with this letter. Please tell us which candidate seems most suitable.")])
         
         def add_secetary_attachments(letter,received_letter_contents):
-            letter.attachments.append()
+            c1 = Person()
+            c2 = Person("M")
+            c3 = Person("F")
             
-        hints(add_secetary_attachments)
+            letter.attachments["Candidate 1"] = c1.get_CV() 
+            letter.attachments["Candidate 2"] = c2.get_CV() 
+            letter.attachments["Candidate 3"] = c3.get_CV() 
+            
+        hints([function_option(add_secetary_attachments)])
         return response_template
 
 

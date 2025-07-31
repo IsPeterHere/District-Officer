@@ -83,8 +83,9 @@ class Template:
                 reader["choose"]()
             
             if callable(chosen):
-                chosen(reply_letter,received_letter.get_written_template_contents())
-            else:
+                chosen = chosen(reply_letter,received_letter.get_written_template_contents())
+            
+            if chosen != None:
                 if chosen == "":
                     contents.append("")
                     ch = 0
@@ -118,6 +119,11 @@ class Template:
         def option(text, **kwargs):
             return kwargs | {"__text":text} 
         return option
+    
+    def make_function_option_creator(self):
+        def option(text, **kwargs):
+            return kwargs | {"__text":text} 
+        return option
 
     def node(self,position):
         split = False
@@ -145,6 +151,8 @@ class Template:
 
             if len(lists_of_options) == 0:
                 lists_of_options = [[{"__text":""}]]
+
+
 
             if len(lists_of_options) == 1 and len(lists_of_options[0]) == 1:
                 branch = {"options":{},"response_func":None}

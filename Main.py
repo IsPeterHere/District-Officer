@@ -1,13 +1,17 @@
 from Post.Adressing import Address_book
 from Post.Letter import Letter
 from Instance import Instance
-
+from People.Hiring import Person
 
 class Main:
+    instance = None
+    
+    def set_instance(instance):
+        Main.instance = instance
+        Person.instance = instance
 
     def __init__(self):
 
-        self.instance = Instance()
         
         self.address_book = Address_book(self.instance)
         self.address_book.add(self.instance.general_secretariat.get_address())
@@ -106,4 +110,5 @@ class Main:
             
         
 if __name__ == "__main__":
+    Main.set_instance(Instance())
     Main().start()

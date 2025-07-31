@@ -8,7 +8,7 @@ class Name_Generator:
         with open("Resources/GermanTownNames.txt",encoding='utf-8' ) as f:
             for line in f.readlines():
                 names.append(line)
-                
+               
         choice = random.choice(names)
         return choice
     
@@ -17,13 +17,14 @@ class Name_Generator:
         assert(gender == "M" or gender == "F"), "gender required for name selction"
         
         names = []
-        with open(f"Resources/first names/yob{year}.txt",encoding='utf-8' ) as f:
+        with open(f"Resources/firstNames/yob{year}.txt",encoding='utf-8' ) as f:
             for line in f.readlines():
                 line = line.split(",")
                 if line[1] == gender:
                     names.append(line[0])
                 
-        choice = random.choice(names)
+        rnd = min(random.randint(0,len(names)),random.randint(0,len(names)),random.randint(0,len(names)))
+        choice = names[rnd]
         return choice
         
     def get_last_name():
@@ -32,5 +33,6 @@ class Name_Generator:
             for line in f.readlines():
                 names.append(line)
                 
-        choice = random.choice(names)
+        rnd = min(random.randint(0,len(names)),random.randint(0,len(names)),random.randint(0,len(names)))
+        choice = names[rnd]
         return choice

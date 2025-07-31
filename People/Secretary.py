@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from People.Personage import Personage
-from People.Templates.Template import Template 
 
 class Writng:
     pass
