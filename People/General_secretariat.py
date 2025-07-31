@@ -1,11 +1,12 @@
 from People.Personage import Personage
 from People.Templates.Template import Template 
+from People.Hiring import Person
 
 class Writng:
     def initial_communication(self):
         initial_communication_template = Template("write")
         base = initial_communication_template.make_base()
-        option = initial_communication_template.make_option_creator()
+        option = initial_communication_template.make_text_option_creator()
 
         main_root,  = base([option("Hi Sir,"), 
                             option("Greetings,"),
@@ -24,21 +25,22 @@ class Writng:
 class Responding:
     def initial_response(self):
 
-        def formality(letter_contents):
+        def give_extra_hints(letter_contents):
             if letter_contents["hints"][0]:
                 return 0
             return 1
 
         response_template = Template("respond")
         base = response_template .make_base()
-        option = response_template .make_option_creator()
-
-        hints, no_hints  = base([option("Dear Sir, your assignment is as follows,")],
-                                          [option("sir...")])(formality)
+        text_option = response_template .make_text_option_creator()
+        function_option = response_template .make_function_option_creator()
+        
+        hints, no_hints  = base([text_option("Dear Sir, your assignment is as follows,")],
+                                          [text_option("sir...")])(give_extra_hints)
 
         hints()
         hints()
-        hints([option("The Western regions are in a dire state, they are lacking in infrastructure, housing, and even basic civil governance. "+
+        hints([text_option("The Western regions are in a dire state, they are lacking in infrastructure, housing, and even basic civil governance. "+
                       "Fortunately limited Control has been established over the regions and us at the GA have been given clearance to start forming a civilian administration. "+
                       f"In your new capacity as District Officer you have been assigned to the district of {self.instance.data.district.name}. " +
                       "Your role is to work on developing the district to lift it out of its current poverty while also building a strong government. " +
@@ -46,8 +48,18 @@ class Responding:
 
         hints()
         hints()
-        hints([option("There are 3 candidates for the position of your secretary forwarded with this letter. Please tell us which candidate seems most suitable.")])
-
+        hints([text_option("There are 3 candidates for the position of your secretary forwarded with this letter. Please tell us which candidate seems most suitable.")])
+        
+        def add_secetary_attachments(letter,received_letter_contents):
+            c1 = Person()
+            c2 = Person("M")
+            c3 = Person("F")
+            
+            letter.attachments["Candidate 1"] = c1.get_CV() 
+            letter.attachments["Candidate 2"] = c2.get_CV() 
+            letter.attachments["Candidate 3"] = c3.get_CV() 
+            
+        hints([function_option(add_secetary_attachments)])
         return response_template
 
 

@@ -1,19 +1,14 @@
 import random 
 import math
-
+from Resources.Name_Generator import Name_Generator
 
 class Tile:
-
-    names = []
-    with open("Resources/GermanTownNames.txt",encoding='utf-8' ) as f:
-        for line in f.readlines():
-            names.append(line)
 
     def __init__(self,pos,parent_map):
         self.__pos = pos
         self.__map = parent_map
 
-        self.name = self.names.pop(random.randint(0,len(self.names)-1))
+        self.name = Name_Generator.get_town_name()
 
         self.make_up = {"forest":{"percent_of_map":0,"utilized":0},
                         "hills":{"percent_of_map":0,"utilized":0},

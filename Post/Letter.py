@@ -16,6 +16,8 @@ class Letter:
 
         self.__contents = []
         self.__written_template_contents = None
+        
+        self.attachments = {}
 
         self.sent = False
     
@@ -26,6 +28,17 @@ class Letter:
     def get_contents(self):
         return self.__contents
 
+    def display_attachments(self):
+        user_input = self.instance.display("Attachments","Attachments",attachments = self.attachments)
+        while user_input != "x":
+            try:
+                if (int(user_input) > 0 and int(user_input) <= len(self.attachments)):
+                    break
+            except:
+                pass
+            self.instance.display.NOTE_invalid_input()
+            user_input = self.instance.display("Attachments","Attachments",attachments = self.attachments)
+        return user_input
 
     def write(self, type_line1 = False,make_signature = False, exitable = True):
         self.display(self,None,input = False,type = type_line1,signature = False)
@@ -41,7 +54,7 @@ class Letter:
                 scroll = True
             scroll = False
 
-            return self.display(self,"Letter",send = False,select = True,scroll = scroll,exit=exitable,signature = False)
+            return self.display(self,"Write Letter",send = False,select = True,scroll = scroll,exit=exitable,signature = False)
             
         while not template_reader["end"]():
             _input = display()
@@ -74,12 +87,12 @@ class Letter:
             self.instance.data.player_signature = signature
 
         if exitable:
-            _input = self.display(self,"Letter",send = True,select = False,scroll = False,exit=True)
+            _input = self.display(self,"Write Letter",send = True,select = False,scroll = False,exit=True)
             if _input == "x":
                 return False
             return True
         else:
-            self.display(self,"Letter",send = True,select = False,scroll = False,exit=False)
+            self.display(self,"Write Letter",send = True,select = False,scroll = False,exit=False)
             return True
 
     def get_written_template_contents(self):

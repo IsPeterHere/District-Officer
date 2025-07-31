@@ -21,7 +21,11 @@ class ABSTRACT_IN_OUT(ABC):
     @abstractmethod
     def OUT_show_address_book(self,address_book,type_date):
         pass
-
+    
+    @abstractmethod
+    def OUT_Attachments_list(self,attachments):
+        pass
+    
     @abstractmethod
     def IN_Press_Enter(self):
         pass
@@ -31,7 +35,14 @@ class ABSTRACT_IN_OUT(ABC):
         pass
     
     @abstractmethod
-    def IN_Letter(self,send,exit,scroll,select):
+    def IN_Write_Letter(self,send,exit,scroll,select):
+        pass
+    @abstractmethod
+    def IN_Read_Letter(self,exit,attachments):
+        pass
+    
+    @abstractmethod
+    def IN_Attachments_list(self):
         pass
     
     @abstractmethod

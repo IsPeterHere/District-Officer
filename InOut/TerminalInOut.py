@@ -13,6 +13,7 @@ class In_Out(ABSTRACT_IN_OUT,Terminal):
         print("INVALID INPUT")
         
     def OUT_show_debug(self):
+        self.clear()
         
         debug = self.text_box(6,20,20,100)
         debug.type(0,"DEBUG -- "+str(time()),speed = 0.04)
@@ -75,6 +76,23 @@ class In_Out(ABSTRACT_IN_OUT,Terminal):
 
         body.print([x for x in range(1,21)],*lines)
 
+    def OUT_Attachments_list(self,attachments):
+        self.clear()
+        
+        top_bar = self.text_box(0,3,40,80,bottom = "_")
+        top_bar.print([2],"     | "+"Attachments" )
+
+        body = self.text_box(3,24,40,80,bottom = "")
+
+        lines = ["     |" for x in range(21)]
+        
+        l = list(attachments.keys())
+        for i in range(len(l)):
+            name = l[i]
+            code = str(i+1).rjust(4,"0")
+            lines[i] = f"{code} | {name}"
+
+        body.print([x for x in range(1,21)],*lines)
     
     def IN_Press_Enter(self):
         return self.get_input("<Press Enter To Continue>")
@@ -82,14 +100,24 @@ class In_Out(ABSTRACT_IN_OUT,Terminal):
     def IN_Text_Entry(self,prompt):
         return self.get_input(prompt)
     
-    def IN_Letter(self,send,exit,scroll,select):
+    def IN_Write_Letter(self,send,exit,scroll,select):
         send_letter_prompt = "<Press Enter To Send>" if send else ""
         exit_letter_prompt = "<Enter 'x' To Exit>" if exit else ""
-        scroll_prompt = "<Enter 'n' / 'm' To Scroll Choices>" if scroll else ""
+        scroll_prompt = "<Enter 'n' / 'm' To Scroll>" if scroll else ""
         select_prompt = "<Press Enter To Select>" if select else ""
-        prompt = f"{exit_letter_prompt}{scroll_prompt}{select_prompt}{send_letter_prompt}"
+        prompt = f"{exit_letter_prompt}  {scroll_prompt}  {select_prompt}  {send_letter_prompt}"
         return self.get_input(prompt)
 
+    def IN_Read_Letter(self,exit,attachments):
+        attachments_prompt = ""
+        if len(attachments) > 0:
+            attachments_prompt = "<Enter 'a' To See Attachments>"
+            
+        prompt = f"{attachments_prompt}  <Enter 'x' To Exit>"
+        return self.get_input(prompt)
+        
+    def IN_Attachments_list(self):
+        return self.get_input("<Enter a code to Open Attachment>  <Enter 'x' To Exit>")
     
     def IN_Address_Book(self,read,write,day):
         
