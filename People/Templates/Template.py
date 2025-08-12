@@ -130,13 +130,19 @@ class Template:
         pos = position
 
         def response_func_setter(new_nodes):
+            nonlocal pos
             def response_func_set(response_function):
+                nonlocal pos
                 if not callable(response_function):
                     raise RuntimeError("Response function not provided")
                 if pos["response_func"] != None:
                     raise RuntimeError("Response function already set")
 
                 pos["response_func"] = response_function
+                
+                if callable(new_nodes):
+                    pos = new_nodes
+                    
                 return new_nodes
 
             return response_func_set
@@ -154,12 +160,16 @@ class Template:
 
 
 
-            if len(lists_of_options) == 1 and len(lists_of_options[0]) == 1:
+            if len(lists_of_options) == 1:
                 branch = {"options":{},"response_func":None}
                 option = lists_of_options[0][0]
-                pos["options"][option["__text"]] = {"branch":branch, "info":option}
+                for option in  lists_of_options[0]:
+                    pos["options"][option["__text"]] = {"branch":branch, "info":option}
+                
+                if self.type == "respond" and len(lists_of_options[0]) > 1:
+                    return response_func_setter(self.node(branch))
+                
                 pos = branch
-
                 
             else:
                 branches = [{"options":{},"response_func":None} for _ in range(len(lists_of_options))]

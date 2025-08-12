@@ -43,7 +43,7 @@ class In_Out(ABSTRACT_IN_OUT,Terminal):
         full_letter,indices = (full_letter+letter.get_contents(),indices+[6+x for x in range(len(letter.get_contents()))])
        
         full_letter,indices = (full_letter + [
-                  " "*60 + letter.signoff + ",",
+                  " "*60 + letter.signoff,
                   " "*60 + letter.sender_address.get_sign()],indices+[19,21]) if show_signature else (full_letter,indices)
 
         letter_box.print(indices,*full_letter)

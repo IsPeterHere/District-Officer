@@ -30,7 +30,7 @@ class Name_Generator:
     def get_last_name():
         names = []
         with open("Resources/last-names.txt",encoding='utf-8' ) as f:
-            for line in f.readlines():
+            for line in f.read().split("\n"):
                 names.append(line)
                 
         rnd = min(random.randint(0,len(names)),random.randint(0,len(names)),random.randint(0,len(names)))

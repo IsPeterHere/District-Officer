@@ -36,7 +36,7 @@ class Person:
         
         
     def get_CV(self):
-        letter = Letter(self.instance,Address(self.first_name+self.surname,"",""))
+        letter = Letter(self.instance,Address(None,"CANDIDATE",self.first_name+" "+self.surname,signature=""),signoff=".Departmental Use Only.")
         template = Person.get_CV_template()
         template.write_response(letter,self)
         return letter
