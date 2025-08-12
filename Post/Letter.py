@@ -5,7 +5,7 @@ class Letter:
     number_of_lines = 12
     non_selected_colour = ["\033[38;5;243m","\033[0m"]
 
-    def __init__(self,instance,sender_address,delivery_address = None, signoff = "Yours sincerely"):
+    def __init__(self,instance,sender_address,delivery_address = None, signoff = "Yours sincerely,"):
         self.instance = instance
         self.delivery_address = delivery_address
 
