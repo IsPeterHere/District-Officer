@@ -91,7 +91,7 @@ class Text_box:
     def __call__(self,line,text):
 
         if len(text) > self.end-self.start:
-            raise RuntimeError("Too wide for box")
+            raise RuntimeError(f"Too wide for box: {text}")
         if line > self.line_end - self.line_start:
             raise RuntimeError("Too tall for box")
 

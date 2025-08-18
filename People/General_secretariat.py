@@ -82,8 +82,8 @@ class Responding:
             
             if received_letter_contents["hints"][0]:
                 what_is_secetary = Letter(self.instance,Address(None,"ATTACHED NOTE","",signature=""),signoff="")
-                what_is_secetary.set_contents(
-                    "The role of (Cheif Administrative) secratry is arguably the most essentail role within a good district ",
+                what_is_secetary.set_contents_vague(
+                    "The role of (Cheif Administrative) secratry is arguably the most essentail role within a good district",
                     "administaration. They will be in charge of the day to day running of the head office of your district",
                     "administartion. Managemnt of hiring, depertments, and fincnace will all be based in your head office,",
                     "and hence your secretary will be the goto point of contact for these areas.")
