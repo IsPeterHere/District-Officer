@@ -3,6 +3,7 @@ from datetime import timedelta
 class Letter:
 
     number_of_lines = 12
+    max_line_width = 99
     non_selected_colour = ["\033[38;5;243m","\033[0m"]
 
     def __init__(self,instance,sender_address,delivery_address = None, signoff = "Yours sincerely,"):
@@ -21,8 +22,39 @@ class Letter:
 
         self.sent = False
     
-    def set_contents(self,*lines_of_text):
-        assert len(lines_of_text) <= Letter.number_of_lines, f"letter must be {self.number_of_lines} lines or less" 
+    def set_contents_vague(self,*lines_of_text):
+        self.__contents = [""]
+        charcters_on_line = 0 
+        
+        for line in lines_of_text:
+            if line == "":
+                self.__contents.append("")
+            else:
+                charcters_on_line = 0
+                while charcters_on_line + len(line) > self.max_line_width:
+        
+                    pivot = self.max_line_width - charcters_on_line
+                    while pivot >= 1 and line[pivot] != " ":
+                        pivot -= 1
+        
+                    if pivot == 0:
+                        raise RuntimeError(f"Word exceeded maximum with of {self.max_line_width}")
+        
+                    self.__contents[-1] += line[:pivot+1] if line[:pivot+1] == " " else " "+line[:pivot+1]
+                    self.__contents.append("")
+                    line = line[pivot+1:]
+                    charcters_on_line = 0
+                    
+                charcters_on_line += len(line)
+                self.__contents[-1] += line if line[0] == " " else " "+line 
+        
+        assert len(self.__contents) <= Letter.number_of_lines, f"letter must be {self.number_of_lines} lines or less \n \n number of lines {len({self.__contents})} \n\n {self.__contents}" 
+
+    def set_contents_exact(self,*lines_of_text):
+        self.__contents = []
+        assert len(lines_of_text) <= Letter.number_of_lines, f"letter must be {self.number_of_lines} lines or less \n \n number of lines {len({self.__contents})} \n\n {self.__contents}" 
+        for line in lines_of_text:
+            assert len(line) <= self.max_line_width, "line width must not exceed {max_line_width}, exceeded by:\n\n {line}"
         self.__contents = list(lines_of_text)
 
     def get_contents(self):

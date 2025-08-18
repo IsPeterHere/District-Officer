@@ -48,7 +48,7 @@ class Main:
     def intro(self):
         received_letter = Letter(self.instance,self.instance.general_secretariat.get_address())
     
-        received_letter.set_contents(
+        received_letter.set_contents_exact(
                    "Good Sir. ","","",
                    "As i am sure you are aware the Western Territories(WT) are now, as of the time of writing, ",
                    "the secretariat's responsibility.",
@@ -58,7 +58,7 @@ class Main:
         while (district_name :=  self.instance.display(received_letter,"Text Entry", prompt = "<Enter District Name>",type = True)) == "":
             pass
     
-        received_letter.set_contents(
+        received_letter.set_contents_exact(
                    "Good Sir. ","","",
                    "As i am sure you are aware the Western Territories(WT) are now, as of the time of writing, ",
                    "the secretariat's responsibility.",
@@ -80,6 +80,8 @@ class Main:
 
             while True:
                 match user_input:
+                    case None:
+                        pass
                     case "d":
                         break
                     case "o":
@@ -98,11 +100,15 @@ class Main:
                                     
                                 
                     case _:
-                        writing_to = self.address_book.get_Addresses()[user_input]
-                        letter = Letter(self.instance, self.instance.you.get_address(),writing_to)
-                        written = letter.write()
-                        if written:
-                            letter.send(days_till_delivery=1)
+                        try:
+                            writing_to = self.address_book.get_Addresses()[user_input]
+                        except:
+                            self.instance.display.NOTE_invalid_input()
+                        else:
+                            letter = Letter(self.instance, self.instance.you.get_address(),writing_to)
+                            written = letter.write()
+                            if written:
+                                letter.send(days_till_delivery=1)
 
                 user_input = self.address_book.open_book()
 
