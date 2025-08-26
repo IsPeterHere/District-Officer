@@ -92,6 +92,7 @@ class Responding:
             self.state = "Choose secetary"
             
         hints([function_option(add_secetary_attachments)])
+        hints([text_option("PROMPT:choose_secetary")])
         return template
 
     def choose_secetary_response(self):
@@ -130,15 +131,18 @@ class General_secretariat(Personage,Writng,Responding):
             case "Start":
                 return self.initial_communication()
             case "Choose secetary":
-                return self.choose_secetary()
-            case _:
-                raise RuntimeError("Unrecognised state: "+str(self.state))
+                if self.instance.you.do_if_prompt("choose_secetary"):
+                    return self.choose_secetary()
+            
+        return None;
+
 
     def get_response_template(self):
         match (self.state):
             case "Start":
                 return self.initial_response()
             case "Choose secetary":
+                
                 return self.choose_secetary_response()
             case _:
                 raise RuntimeError("Unrecognised state: "+str(self.state))
