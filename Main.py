@@ -11,8 +11,6 @@ class Main:
         Person.instance = instance
 
     def __init__(self):
-
-        
         self.address_book = Address_book(self.instance)
         self.address_book.add(self.instance.general_secretariat.get_address())
 
@@ -26,7 +24,7 @@ class Main:
             self.instance.data.district.name = "test_district"
             self.instance.you.create_address(self.instance.data.district.name)
             users_first_letter = Letter(self.instance,self.instance.you.get_address(),self.instance.general_secretariat.get_address())
-            users_first_letter.write(make_signature=True,exitable = False)
+            users_first_letter.write(self.instance.general_secretariat.get_writing_template(),make_signature=True,exitable = False)
             users_first_letter.send(days_till_delivery=1)
 
         else:
@@ -37,7 +35,7 @@ class Main:
             self.address_book.open_book(read = False,day = False)
 
             users_first_letter = Letter(self.instance,self.instance.you.get_address(),self.instance.general_secretariat.get_address())
-            users_first_letter.write(make_signature=True,exitable = False)
+            users_first_letter.write(self.instance.general_secretariat.get_writing_template(),make_signature=True,exitable = False)
             users_first_letter.send(days_till_delivery=1)
 
             self.address_book.open_book(write = False,read = False)
@@ -86,6 +84,7 @@ class Main:
                         break
                     case "o":
                         letter = self.instance.you.pop_inbox()
+                        letter.transfer_prompts(self.instance.you)
                         while user_input != "x":
                             user_input = self.instance.display(letter,"Read Letter", exit = True, attachments = letter.attachments)
                             if user_input == "a":
@@ -105,10 +104,13 @@ class Main:
                         except:
                             self.instance.display.NOTE_invalid_input()
                         else:
-                            letter = Letter(self.instance, self.instance.you.get_address(),writing_to)
-                            written = letter.write()
-                            if written:
-                                letter.send(days_till_delivery=1)
+                            if (template := writing_to.person.get_writing_template()) != None:
+                                letter = Letter(self.instance, self.instance.you.get_address(),writing_to)
+                                written = letter.write(template)
+                                if written:
+                                    letter.send(days_till_delivery=1)
+
+                                
 
                 user_input = self.address_book.open_book()
 

@@ -5,6 +5,21 @@ class You(Personage):
 
     def __init__(self,instance):
         Personage.__init__(self,instance)
+        self.__prompts = set()
+
+    def add_prompt(self,prompt):
+        self.__prompts.add(prompt)
+
+    def do_if_prompt(self,prompt):
+        if prompt in self.__prompts:
+            self.__prompts.remove(prompt)
+            return True
+        return False
+
+
+
+
+
 
     def create_address(self,district_name):
         return Personage.create_address(self,

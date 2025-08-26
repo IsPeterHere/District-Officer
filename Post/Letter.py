@@ -16,11 +16,20 @@ class Letter:
         self.signoff = signoff
 
         self.__contents = []
+        self.__prompts = set()
         self.__written_template_contents = None
         
         self.attachments = {}
 
         self.sent = False
+        
+    def add_prompt(self,prompt):
+        self.__prompts.add(prompt)
+        
+    def transfer_prompts(self,you):
+        for prompt in list(self.__prompts):
+            you.add_prompt(prompt)
+        self.__prompts = {}
     
     def set_contents_vague(self,*lines_of_text):
         self.__contents = [""]
@@ -72,10 +81,10 @@ class Letter:
             user_input = self.instance.display("Attachments","Attachments",attachments = self.attachments)
         return user_input
 
-    def write(self, type_line1 = False,make_signature = False, exitable = True):
+    def write(self,template, type_line1 = False,make_signature = False, exitable = True):
         self.display(self,None,input = False,type = type_line1,signature = False)
 
-        template_reader = self.delivery_address.person.get_writing_template().make_reader()
+        template_reader = template.make_reader()
         self.__contents = [""]
         chosen_contents = [""]
 

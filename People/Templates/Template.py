@@ -84,7 +84,10 @@ class Template:
                 chosen = chosen(reply_letter,received_letter.get_written_template_contents())
             
             if chosen != None:
-                contents.append(chosen)
+                if chosen [0:7] == "PROMPT:":
+                    reply_letter.add_prompt(chosen [7:])
+                else:
+                    contents.append(chosen)
  
 
         reply_letter.set_contents_vague(*contents)
