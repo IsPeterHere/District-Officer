@@ -72,7 +72,12 @@ class In_Out(ABSTRACT_IN_OUT,Terminal):
             code = addresses[line].code
             name = addresses[line].get_name()
             desc = addresses[line].desc
-            lines[line] = f"{code} | {name}"+" "*(21-len(name))+f"| {desc}"
+            
+            if addresses[line].person.get_writing_template_index() == None:
+                lines[line] = f"~~~~ | {name}"+" "*(21-len(name))+f"| {desc}"
+                
+            else:
+                lines[line] = f"{code} | {name}"+" "*(21-len(name))+f"| {desc}"
 
         body.print([x for x in range(1,21)],*lines)
 

@@ -50,7 +50,7 @@ class Terminal():
         print("\n".join(out), flush=True)
                 
     def __clear_terminal(self):
-        os.system('cls' if os.name == 'nt' else 'clear')
+        pass#os.system('cls' if os.name == 'nt' else 'clear')
 
     def __clear_text(self):
         self.text = [[" " for x in range(self.size.columns)] for x in range(self.size.lines-1)]
@@ -89,8 +89,9 @@ class Text_box:
 
 
     def __call__(self,line,text):
+    
 
-        if len(text) > self.end-self.start:
+        if len("".join([s for s in list(text) if s.isalnum()])) > self.end-self.start:
             raise RuntimeError(f"Too wide for box: {text}")
         if line > self.line_end - self.line_start:
             raise RuntimeError("Too tall for box")
