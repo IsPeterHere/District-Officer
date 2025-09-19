@@ -24,7 +24,7 @@ class Main:
             self.instance.data.district.name = "test_district"
             self.instance.you.create_address(self.instance.data.district.name)
             users_first_letter = Letter(self.instance,self.instance.you.get_address(),self.instance.general_secretariat.get_address())
-            users_first_letter.write(self.instance.general_secretariat.get_writing_template(),make_signature=True,exitable = False)
+            users_first_letter.write(self.instance.general_secretariat.get_writing_template(self.instance.general_secretariat.get_writing_template_index()),make_signature=True,exitable = False)
             users_first_letter.send(days_till_delivery=1)
 
         else:
@@ -35,7 +35,7 @@ class Main:
             self.address_book.open_book(read = False,day = False)
 
             users_first_letter = Letter(self.instance,self.instance.you.get_address(),self.instance.general_secretariat.get_address())
-            users_first_letter.write(self.instance.general_secretariat.get_writing_template(),make_signature=True,exitable = False)
+            users_first_letter.write(self.instance.general_secretariat.get_writing_template(self.instance.general_secretariat.get_writing_template_index()),make_signature=True,exitable = False)
             users_first_letter.send(days_till_delivery=1)
 
             self.address_book.open_book(write = False,read = False)
@@ -104,7 +104,8 @@ class Main:
                         except:
                             self.instance.display.NOTE_invalid_input()
                         else:
-                            if (template := writing_to.person.get_writing_template()) != None:
+                            if writing_to.person.get_writing_template_index() != None:
+                                template = writing_to.person.get_writing_template(writing_to.person.get_writing_template_index())
                                 letter = Letter(self.instance, self.instance.you.get_address(),writing_to)
                                 written = letter.write(template)
                                 if written:

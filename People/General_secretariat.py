@@ -125,14 +125,20 @@ class General_secretariat(Personage,Writng,Responding):
         
         self.state = "Start"
 
-
-    def get_writing_template(self):
+    def get_writing_template(self,index):
+        match (index):
+            case 0:
+                return self.initial_communication()
+            case 1:
+                return self.choose_secetary()
+            
+    def get_writing_template_index(self):
         match (self.state):
             case "Start":
-                return self.initial_communication()
+                return 0
             case "Choose secetary":
-                if self.instance.you.do_if_prompt("choose_secetary"):
-                    return self.choose_secetary()
+                if self.instance.you.test_prompt("choose_secetary"):
+                    return 1
             
         return None;
 

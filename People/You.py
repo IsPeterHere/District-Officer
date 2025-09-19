@@ -10,9 +10,8 @@ class You(Personage):
     def add_prompt(self,prompt):
         self.__prompts.add(prompt)
 
-    def do_if_prompt(self,prompt):
+    def test_prompt(self,prompt):
         if prompt in self.__prompts:
-            self.__prompts.remove(prompt)
             return True
         return False
 
